@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  main-db:
+    ports:
+      - "27017:27017"
+    image: mongo:7
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=assignment
+      - MONGO_INITDB_ROOT_PASSWORD=assignment
+      - MONGO_INITDB_DATABASE=assignment
