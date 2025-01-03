@@ -1,9 +1,45 @@
+from datetime import datetime, timedelta, timezone
+import jwt
+from fastapi import Response
 from backend.utils import Info
-
+from backend.db.users import User
+from backend.settings import settings
 
 async def login(info: Info, username: str, password: str) -> str:
-    """
-    Implement login logic here
+   """
+   Implementace přihlášení uživatele pomocí JWT tokenu
+   Args:
+       info: Kontext požadavku obsahující auth_service a response objekt
+       username: Přihlašovací jméno
+       password: Heslo uživatele
+   Returns:
+       str: JWT token při úspěšném přihlášení nebo chybová zpráva
+   """
+   # Vyhledání uživatele v databázi podle username
+   user = await User.find_one(User.username == username)
+   if not user:
+       return "Invalid credentials"
 
-    Consider to change return value as well.
-    """
+   # Ověření hesla pomocí auth_service
+   if not info.context.auth_service.verify_password(password, user.password):
+       return "Invalid credentials"
+
+   # Vytvoření JWT tokenu s exspirací
+   token_data = {
+        "sub": username,  # subject = identifikace uživatele
+        "exp": datetime.now(timezone.utc) + timedelta(days=settings.JWT_EXPIRATION_DAYS)
+   }
+   # Zakódování tokenu pomocí tajného klíče
+   token = jwt.encode(token_data, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+   
+   # Nastavení bezpečné cookie s tokenem
+   response = info.context.response
+   response.set_cookie(
+       key="auth_token", 
+       value=token,
+       httponly=True,  # cookie není dostupná z JavaScriptu
+       max_age=86400,  # platnost cookie 24 hodin
+       samesite="lax"  # ochrana proti CSRF
+   )
+
+   return token

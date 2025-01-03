@@ -39,3 +39,23 @@ class AuthorizationService:
             raise exc from e
 
         return user
+
+    def verify_password(self, password: str, stored_password: str) -> bool:
+        """
+        Ověří heslo proti uloženému hash
+        """
+        try:
+            delimiter = stored_password[0]
+            _, salt, hashed_password = stored_password.split(delimiter)
+
+            kdf = PBKDF2HMAC(
+                algorithm=hashes.SHA512(),
+                length=64,
+                salt=base64.b64decode(salt),
+                iterations=25000,
+            )
+
+            kdf.verify(password.encode(), base64.b64decode(hashed_password))
+            return True
+        except (InvalidKey, ValueError):
+            return False
