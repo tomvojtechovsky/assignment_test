@@ -1,8 +1,8 @@
 import strawberry
-
-from backend.schema.query.users import UserQueries
-
+from .users import UserQueries
+from .messages import MessagesQueries
 
 @strawberry.type
 class Query:
-    users: UserQueries = strawberry.field(resolver=UserQueries)
+    users: UserQueries = strawberry.field(resolver=lambda: UserQueries())
+    messages: MessagesQueries = strawberry.field(resolver=lambda: MessagesQueries())

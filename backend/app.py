@@ -1,3 +1,4 @@
+#backend\app.py
 import asyncio
 import datetime
 import random
@@ -36,6 +37,10 @@ ATTACK_TYPES = [
 def _random_ip() -> str:
     return ".".join([str(random.randint(1, 255)) for _ in range(4)])
 
+def _random_date(start, end):
+    return start + datetime.timedelta(
+        seconds=random.randint(0, int((end - start).total_seconds())),
+    )
 
 def _generate_syslog_message() -> SyslogData:
     threat = random.random() > 0.5
@@ -44,17 +49,26 @@ def _generate_syslog_message() -> SyslogData:
     else:
         attack_type = "benign"
 
+    start_date = datetime.datetime(2024, 12, 1)
+    end_date = datetime.datetime.now()
+    random_timestamp = _random_date(start_date, end_date)
+
     return SyslogData(
         probe_name="probe-1",
         probe_ip=_random_ip(),
         content=random.choice(SYSLOG_TEXT),
-        timestamp=datetime.datetime.now(),
+        timestamp=random_timestamp,
         threat=threat,
         attack_type=attack_type,
     )
 
 
 def _generate_dataflow_message() -> DataflowData:
+
+    start_date = datetime.datetime(2024, 12, 1)
+    end_date = datetime.datetime.now()
+    random_timestamp = _random_date(start_date, end_date)
+
     probe_name = "probe-1"
     probe_ip = _random_ip()
     timestamp = datetime.datetime.now()
@@ -72,7 +86,7 @@ def _generate_dataflow_message() -> DataflowData:
         probe_ip=probe_ip,
         content=f"{timestamp=}, {probe_name=}, {probe_ip=}, {threat=}, "
         f"{source_ip=}, {source_port=}, {target_ip=}, {target_port=}",
-        timestamp=timestamp,
+        timestamp=random_timestamp,
         threat=threat,
         source_ip=source_ip,
         source_port=source_port,
@@ -88,6 +102,7 @@ async def generate_message():
     await message.insert()
 
 
+
 async def drop_db():
     await Record.find_all(with_children=True).delete()
     await User.delete_all()
@@ -95,15 +110,11 @@ async def drop_db():
 
 async def init_db():
     await drop_db()
-    # password: admin
-    await User(
-        username="admin",
-        password="$Sf3zOdAxTLlRLjMg72ldVPgk4iLFrCgabFM3HHhp3To=$O8Y3p5HQdDDYLW2z"
-        "/j8S9tuKPOZxr2vVqm9MV1GHY8Smyj1UDFVuIr4G/7Roq/1NPYOhxkmGw5ozxpWTVQcLPQ==",
-    ).insert()
+    
     tasks = []
     for _ in range(1000):
         tasks.append(asyncio.create_task(generate_message()))
+    
     await asyncio.gather(*tasks)
 
 

@@ -1,8 +1,12 @@
-// src/context/AuthContext.tsx
-import { createContext, useContext, useState, ReactNode } from 'react';
+// AuthContext.tsx
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-interface AuthContextType {
+interface AuthState {
   isAuthenticated: boolean;
+  token: string | null;
+}
+
+interface AuthContextType extends AuthState {
   login: (token: string) => void;
   logout: () => void;
 }
@@ -10,18 +14,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [state, setState] = useState<AuthState>({
+    isAuthenticated: false,
+    token: null
+  });
 
-  const login = (token: string) => {
-    setIsAuthenticated(true);
-  };
+  const login = useCallback((token: string) => {
+    setState({ isAuthenticated: true, token });
+  }, []);
 
-  const logout = () => {
-    setIsAuthenticated(false);
-  };
+  const logout = useCallback(() => {
+    setState({ isAuthenticated: false, token: null });
+  }, []);
+
+  const value = { ...state, login, logout };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
@@ -30,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error('useAuth musí být použit uvnitř AuthProvider');
   }
   return context;
 }

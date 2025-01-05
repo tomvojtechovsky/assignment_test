@@ -1,12 +1,19 @@
-// components/auth/ProtectedRoute.tsx
+import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-type ProtectedRouteProps = {
-  children: React.ReactNode;
+interface ProtectedRouteProps {
+  children: ReactNode;
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/" />;
+
+  if (!isAuthenticated) {
+    // Pokud není uživatel přihlášen, přesměrujeme na login
+    return <Navigate to="/login" replace />;
+  }
+
+  // Pokud je přihlášen, zobrazíme děti (chráněný obsah)
+  return <>{children}</>;
 }

@@ -1,3 +1,4 @@
+#backend\schema\query\users\__init__.py
 import strawberry
 
 from backend.schema.query.users.resolver import get_users

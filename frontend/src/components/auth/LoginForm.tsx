@@ -48,7 +48,7 @@ export default function LoginForm() {
      {/* Username input */}
      <div>
        <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-         Username
+         Uživatelské jméno
        </label>
        <input
          type="text"
@@ -65,7 +65,7 @@ export default function LoginForm() {
      {/* Password input */}
      <div>
        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-         Password
+         Heslo
        </label>
        <input
          type="password"
@@ -88,7 +88,7 @@ export default function LoginForm() {
            ? 'bg-blue-300 cursor-not-allowed' 
            : 'bg-blue-500 hover:bg-blue-600'} text-white`}
      >
-       {loading ? 'Logging in...' : 'Log In'}
+       {loading ? 'Přihlašování...' : 'Přihlásit se'}
      </button>
    </form>
  );

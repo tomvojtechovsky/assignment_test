@@ -1,3 +1,4 @@
+#backend\schema\query\users\resolver.py
 import strawberry
 
 from backend.db.users import User
