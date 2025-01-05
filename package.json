@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@types/geoip-lite": "^1.4.4",
+    "@types/ol": "^7.0.0",
+    "geoip-lite": "^1.4.10",
+    "ol": "^10.3.1",
+    "ol-react": "^0.1.5"
+  }
+}

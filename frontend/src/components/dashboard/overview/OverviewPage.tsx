@@ -1,5 +1,6 @@
 // components/dashboard/overview/OverviewPage.tsx
 import MetricsCards from "./MetricsCards";
+import QuickInsights from "./QuickInsights";
 
 export default function OverviewPage() {
   return (
@@ -7,7 +8,7 @@ export default function OverviewPage() {
       <h1 className="text-2xl font-bold mb-6">Přehled</h1>
       <div className="">
         <MetricsCards />
-        {/* Zde budou další komponenty */}
+        <QuickInsights />
       </div>
     </div>
   );

@@ -1,0 +1,77 @@
+Takto by se mi to líbilo:
+. Příklad zobrazení na kartě:
+Text: „Počet hrozeb: 3 (60 %), Stav: V ohrožení“
+Ikona: Červená výstraha
+Barva karty: Červená
+
+
+Trend se mi moc nelíbí. V jiné komponentě přidáme line graf nebo histogram a tím by se to duplikovalo.
+
+Tím jsme si odpověděli na jednu ze základních otázek:
+
+Je systém v pořádku nebo je v ohrožení? - PRÁVĚ JSEM SI TO DEFINOVALI.
+
+Jaká je současná úroveň aktivity a jak se vyvíjí?
+- částečně to říká metrika Aktivita za 24 h.
+- VYTVOŘÍME line chart
+
+Jaké hrozby byly detekovány a jak jsou rozdělené? 
+- DONUT
+
+Jak vážné jsou tyto hrozby?
+- umíme to z dat určit? - umíme říct, jaké hrozby jsou vážnější a méně vážné? ...
+- ZATÍM ZRUŠME.
+
+Co má uživatel udělat dál?
+- ODLOŽÍME.
+
+Skvělé, máme tedy jasně definováno, co by měla hlavní komponenta zobrazovat:
+
+Bezpečnostní stav – Počet hrozeb a stav systému (s výstražnou ikonou a barevnou kartou).
+Aktivita systému – Bude zobrazena jako line chart.
+Detekované hrozby – Rozdělení hrozeb v donut grafu.
+Vážnost hrozeb – Zatím zrušíme.
+Akce pro uživatele – Odložíme pro jinou komponentu.
+Pokud bys měl další otázky nebo bys chtěl pokračovat s konkrétními vizualizacemi, dej vědět!
+
+Na základě tvého zadání, metriky a dat můžeme určit, jak bude bezpečnostní stav hodnocen a jak bude zobrazen v hlavní komponentě.
+
+1. Bezpečnostní stav:
+Co bude v metrice vidět:
+
+Hlavní číslo: Celkový počet hrozeb detekovaných v systému. Může být to číslo jako: „Počet hrozeb: 3“.
+Ikona/indikátor stavu: Fajfka, varovná ikona nebo červený/y symbol pro označení, zda je systém „v pořádku“ nebo „v ohrožení“.
+Barevné obarvení karty: Karta může být zelená (pokud je vše v pořádku), žlutá (pokud je potřeba pozornost), nebo červená (pokud je v systému kritická hrozba).
+Zelená – Systém je bezpečný, bez hrozeb.
+Žlutá – Existují nějaké hrozby, ale nejsou kritické.
+Červená – Systém je v ohrožení, přítomné jsou vážné hrozby.
+Jak to získáme z dat:
+
+Počet hrozeb: Tento údaj bude vypočítán na základě počtu záznamů s hodnotou threat: true.
+Příklad: Pokud máme 5 záznamů a 3 z nich mají threat: true, pak Počet hrozeb = 3.
+Hodnocení stavu:
+Pokud je procento hrozeb více než 50 %, označíme to jako kritické a karta bude červená.
+Pokud je procento hrozeb mezi 20-50 %, karta bude žlutá.
+Pokud je procento hrozeb nižší než 20 %, karta bude zelená.
+Trend: Určujeme, zda se počet hrozeb zvyšuje nebo klesá na základě časového rozdělení. Například, pokud máme data z několika dní a hrozby rostou, můžeme zobrazit šipku směřující nahoru.
+Praktický výpočet pro konkrétní data:
+Z dat, která máš k dispozici, budeme počítat počet hrozeb a analyzovat je:
+
+Záznamy s threat: true:
+Záznamy s hrozbami: 3 (MITM, worm, MITM)
+Celkový počet záznamů: 5
+Procento hrozeb: 3/5 = 60 % → Tento stav bude označen červeně, což znamená, že je systém v ohrožení.
+Výsledek:
+
+Počet hrozeb: 3
+Hodnocení stavu: Kritický stav – 60 % hrozeb
+Barva: Červená
+Ikona: Varovná ikona nebo červená šipka
+Trend: Rostoucí (pokud se trend hrozeb v posledních dnech zvyšuje)
+2. Příklad zobrazení na kartě:
+Text: „Počet hrozeb: 3 (60 %), Stav: V ohrožení“
+Ikona: Červená výstraha
+Barva karty: Červená
+Trend: Pokud by trend hrozeb rostl, přidej šipku směřující nahoru.
+3. Závěr pro komponentu:
+Bezpečnostní stav bude zobrazen jako karta, kde hlavní číslo bude ukazovat počet hrozeb a trend, a karta bude obarvená podle úrovně rizika (zelená, žlutá, červená). To vše umožní uživateli okamžitě pochopit, zda je systém v pořádku nebo v ohrožení, a případně ho motivovat k akci.
