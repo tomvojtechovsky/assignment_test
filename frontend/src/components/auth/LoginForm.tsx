@@ -56,7 +56,7 @@ export default function LoginForm() {
          value={username}
          onChange={(e) => setUsername(e.target.value)}
          className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-         placeholder="Enter your username"
+         placeholder="Vaše uživatelské jméno"
          disabled={loading}
          required
        />
@@ -73,7 +73,7 @@ export default function LoginForm() {
          value={password}
          onChange={(e) => setPassword(e.target.value)}
          className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-         placeholder="Enter your password"
+         placeholder="Zadejte heslo"
          disabled={loading}
          required
        />

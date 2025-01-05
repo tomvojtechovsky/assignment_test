@@ -110,11 +110,15 @@ async def drop_db():
 
 async def init_db():
     await drop_db()
-    
+    # password: admin
+    await User(
+        username="admin",
+        password="$Sf3zOdAxTLlRLjMg72ldVPgk4iLFrCgabFM3HHhp3To=$O8Y3p5HQdDDYLW2z"
+        "/j8S9tuKPOZxr2vVqm9MV1GHY8Smyj1UDFVuIr4G/7Roq/1NPYOhxkmGw5ozxpWTVQcLPQ==",
+    ).insert()
     tasks = []
     for _ in range(1000):
         tasks.append(asyncio.create_task(generate_message()))
-    
     await asyncio.gather(*tasks)
 
 
@@ -132,7 +136,7 @@ def get_app() -> FastAPI:
     app.include_router(router)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost", "http://localhost:5173", "http://127.0.0.1", "http://127.0.0.1:5173"],
+        allow_origins=["http://localhost", "http://localhost:5173", "http://127.0.0.1", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174"],
         allow_credentials=True,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],

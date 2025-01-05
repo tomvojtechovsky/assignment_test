@@ -1,3 +1,4 @@
+#backend\schema\query\messages\types.py
 import strawberry
 from datetime import datetime
 from typing import List, Union
@@ -28,3 +29,13 @@ class MessagesResponse:
     items: List[Union[SyslogMessage, DataflowMessage]]
     totalCount: int = strawberry.field(description="Celkový počet záznamů")
     hasMore: bool = strawberry.field(description="Indikátor dalších stránek")
+
+@strawberry.type
+class MessagesMetricsResponse:
+    """Response objekt pro metriky zpráv"""
+    totalCount: int
+    syslogCount: int
+    dataflowCount: int
+    threatsCount: int
+    attacksByType: dict[str, int]
+    last24hCount: int
