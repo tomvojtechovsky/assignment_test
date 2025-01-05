@@ -89,9 +89,9 @@ async def aggregate_by_days(start_date: datetime, end_date: datetime) -> List[Ac
             daily_counts[day] = daily_counts.get(day, 0) + 1
         
         # Příprava dat pro graf
-        result = [
+        result = [ 
             ActivityDataPoint(
-                label=day.strftime('%d.%m'),
+                label=day.strftime('%d. %m.'),  # Změna z '%d.%m' na '%d. %m.'
                 count=count
             ) 
             for day, count in sorted(daily_counts.items())

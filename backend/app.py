@@ -38,9 +38,22 @@ def _random_ip() -> str:
     return ".".join([str(random.randint(1, 255)) for _ in range(4)])
 
 def _random_date(start, end):
-    return start + datetime.timedelta(
-        seconds=random.randint(0, int((end - start).total_seconds())),
-    )
+    total_seconds = int((end - start).total_seconds())
+    
+    # Define weights for different periods
+    def get_weight(date):
+        if date.weekday() >= 5:  # Weekend
+            return 3
+        elif date.month in [6, 7, 8, 12]:  # Summer and Winter holidays
+            return 2
+        else:
+            return 1
+
+    while True:
+        random_seconds = random.randint(0, total_seconds)
+        random_date = start + datetime.timedelta(seconds=random_seconds)
+        if random.choices([True, False], [get_weight(random_date), 1])[0]:
+            return random_date
 
 def _generate_syslog_message() -> SyslogData:
     threat = random.random() > 0.5
@@ -49,7 +62,7 @@ def _generate_syslog_message() -> SyslogData:
     else:
         attack_type = "benign"
 
-    start_date = datetime.datetime(2024, 12, 1)
+    start_date = datetime.datetime(2024, 1, 1)
     end_date = datetime.datetime.now()
     random_timestamp = _random_date(start_date, end_date)
 
@@ -65,7 +78,7 @@ def _generate_syslog_message() -> SyslogData:
 
 def _generate_dataflow_message() -> DataflowData:
 
-    start_date = datetime.datetime(2024, 12, 1)
+    start_date = datetime.datetime(2024, 1, 1)
     end_date = datetime.datetime.now()
     random_timestamp = _random_date(start_date, end_date)
 
