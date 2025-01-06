@@ -1,9 +1,15 @@
 # backend/schema/query/messages/activity_resolver.py
 import strawberry
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timedelta
+
+import sys
 import logging
 from backend.db.data_messages import Record, DataflowData, SyslogData
+from .metrics_types import ActivityDataPoint
+
+logger = logging.getLogger('strawberry.query')
+logger.setLevel(logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
@@ -13,139 +19,178 @@ class ActivityDataPoint:
     label: str
     count: int
 
-async def get_activity_data(period: str) -> List[ActivityDataPoint]:
-    """
-    Získá aktivitu systému pro zadané období
-    
-    Args:
-        period (str): Období - 'week', 'month', 'year'
-    """
+async def aggregate_all_data(type: Optional[str] = None) -> List[ActivityDataPoint]:
+   try:
+       query = Record.find({}, with_children=True)
+       if type and type != 'all':
+           query = query.find({'type': type})
+
+       records = await query.to_list()
+       logger.debug(f"Found {len(records)} records")
+
+       daily_counts = {}
+       for record in records:
+           day = record.timestamp.date()
+           daily_counts[day] = daily_counts.get(day, 0) + 1
+
+       result = [
+           ActivityDataPoint(
+               label=day.strftime('%d. %m.'),
+               count=count
+           )
+           for day, count in sorted(daily_counts.items())
+       ]
+
+       logger.debug(f"Aggregated {len(result)} daily points")
+       return result
+
+   except Exception as e:
+       logger.error(f"Error aggregating all data: {e}", exc_info=True)
+       return []
+   
+
+async def get_activity_data(
+   period: str,
+   startDate: Optional[str] = None,
+   endDate: Optional[str] = None,
+   type: Optional[str] = None
+) -> List[ActivityDataPoint]:
+   try:
+       logger.debug(f"Fetching activity data for period: {period}, type: {type}")
+       now = datetime.utcnow()
+
+       if period == 'all':
+           data = await aggregate_all_data(type)
+       elif period == 'custom':
+           if not startDate and not endDate:
+               data = await aggregate_all_data(type)
+           else:
+               start_date = datetime.fromisoformat(startDate.replace('Z', '')) if startDate else None
+               end_date = datetime.fromisoformat(endDate.replace('Z', '')) if endDate else now
+               days_diff = (end_date - (start_date or now - timedelta(days=365))).days
+               data = await aggregate_by_weeks(start_date, end_date, type) if days_diff > 90 else await aggregate_by_days(start_date, end_date, type)
+       elif period == 'week':
+           start_date = now - timedelta(days=7)
+           data = await aggregate_by_days(start_date, now, type)
+       elif period == 'month':
+           start_date = now - timedelta(days=30)
+           data = await aggregate_by_days(start_date, now, type)
+       elif period == 'year':
+           start_date = now - timedelta(days=365)
+           data = await aggregate_by_weeks(start_date, now, type)
+       else:
+           return []
+
+       logger.debug(f"Returning {len(data)} data points")
+       return data
+
+   except Exception as e:
+       logger.error(f"Error processing activity: {e}", exc_info=True)
+       return []
+
+
+
+async def aggregate_by_days(start_date: datetime, end_date: datetime, type: Optional[str] = None) -> List[ActivityDataPoint]:
     try:
-        # Nastavení logování
-        logger.setLevel(logging.DEBUG)
-        
-        now = datetime.utcnow()
-        logger.debug(f"Aktuální čas: {now}")
+        # Základní query
+        query = Record.find({}, with_children=True)
 
-        # Kontrola počtu záznamů v databázi
-        total_records_syslog = await SyslogData.find_all().count()
-        total_records_dataflow = await DataflowData.find_all().count()
-        logger.debug(f"Počet syslog záznamů: {total_records_syslog}")
-        logger.debug(f"Počet dataflow záznamů: {total_records_dataflow}")
+        # Filtr podle typu
+        if type and type != 'all':
+            query = query.find({'type': type})
 
-        if period == 'week':
-            start_date = now - timedelta(days=7)
-            data = await aggregate_by_days(start_date, now)
-        
-        elif period == 'month':
-            start_date = now - timedelta(days=30)
-            data = await aggregate_by_days(start_date, now)
-        
-        elif period == 'year':
-            start_date = now - timedelta(days=365)
-            data = await aggregate_by_weeks(start_date, now)
-        
-        else:
-            data = []
+        # Filtr podle datového rozsahu
+        if start_date and end_date:
+            query = query.find({
+                'timestamp': {
+                    '$gte': start_date,
+                    '$lte': end_date
+                }
+            })
+        elif start_date:
+            query = query.find({
+                'timestamp': {
+                    '$gte': start_date
+                }
+            })
+        elif end_date:
+            query = query.find({
+                'timestamp': {
+                    '$lte': end_date
+                }
+            })
 
-        logger.debug(f"Vracím {len(data)} datových bodů")
-        return data
-
-    except Exception as e:
-        logger.error(f"Chyba při zpracování aktivity: {e}", exc_info=True)
-        return []
-
-async def aggregate_by_days(start_date: datetime, end_date: datetime) -> List[ActivityDataPoint]:
-    """Agregace dat po dnech"""
-    try:
-        # Hledání v obou typech záznamů
-        query_syslog = SyslogData.find({
-            'timestamp': {
-                '$gte': start_date,
-                '$lte': end_date
-            }
-        })
-        
-        query_dataflow = DataflowData.find({
-            'timestamp': {
-                '$gte': start_date,
-                '$lte': end_date
-            }
-        })
-        
-        syslog_records = await query_syslog.to_list()
-        dataflow_records = await query_dataflow.to_list()
-        
-        # Kombinované záznamy
-        records = syslog_records + dataflow_records
-        
-        logger.debug(f"Počet syslog záznamů v intervalu: {len(syslog_records)}")
-        logger.debug(f"Počet dataflow záznamů v intervalu: {len(dataflow_records)}")
+        records = await query.to_list()
+        logger.debug(f"Found {len(records)} records")
 
         # Agregace po dnech
         daily_counts = {}
         for record in records:
             day = record.timestamp.date()
             daily_counts[day] = daily_counts.get(day, 0) + 1
-        
-        # Příprava dat pro graf
-        result = [ 
-            ActivityDataPoint(
-                label=day.strftime('%d. %m.'),  # Změna z '%d.%m' na '%d. %m.'
-                count=count
-            ) 
-            for day, count in sorted(daily_counts.items())
-        ]
-        
-        logger.debug(f"Agregované denní body: {result}")
-        return result
 
-    except Exception as e:
-        logger.error(f"Chyba při agregaci dnů: {e}", exc_info=True)
-        return []
-
-async def aggregate_by_weeks(start_date: datetime, end_date: datetime) -> List[ActivityDataPoint]:
-    """Agregace dat po týdnech"""
-    try:
-        # Hledání v obou typech záznamů
-        query_syslog = SyslogData.find({
-            'timestamp': {
-                '$gte': start_date,
-                '$lte': end_date
-            }
-        })
-        
-        query_dataflow = DataflowData.find({
-            'timestamp': {
-                '$gte': start_date,
-                '$lte': end_date
-            }
-        })
-        
-        syslog_records = await query_syslog.to_list()
-        dataflow_records = await query_dataflow.to_list()
-        
-        # Kombinované záznamy
-        records = syslog_records + dataflow_records
-        
-        # Agregace po týdnech
-        weekly_counts = {}
-        for record in records:
-            week_start = record.timestamp - timedelta(days=record.timestamp.weekday())
-            weekly_counts[week_start.date()] = weekly_counts.get(week_start.date(), 0) + 1
-        
-        # Příprava dat pro graf
         result = [
             ActivityDataPoint(
-                label=f'Týden {week.isocalendar()[1]}',
+                label=day.strftime('%d. %m.'),
                 count=count
-            ) 
-            for week, count in sorted(weekly_counts.items())
+            )
+            for day, count in sorted(daily_counts.items())
         ]
-        
-        logger.debug(f"Agregované týdenní body: {result}")
+
         return result
 
     except Exception as e:
-        logger.error(f"Chyba při agregaci týdnů: {e}", exc_info=True)
+        logger.error(f"Error in daily aggregation: {e}", exc_info=True)
         return []
+
+
+
+async def aggregate_by_weeks(start_date: datetime, end_date: datetime, type: Optional[str] = None) -> List[ActivityDataPoint]:
+   try:
+       query = Record.find({}, with_children=True)
+
+       if type and type != 'all':
+           query = query.find({'type': type})
+
+       if start_date and end_date:
+           query = query.find({
+               'timestamp': {
+                   '$gte': start_date,
+                   '$lte': end_date
+               }
+           })
+       elif start_date:
+           query = query.find({
+               'timestamp': {
+                   '$gte': start_date
+               }
+           })
+       elif end_date:
+           query = query.find({
+               'timestamp': {
+                   '$lte': end_date
+               }
+           })
+
+       records = await query.to_list()
+       logger.debug(f"Found {len(records)} records")
+
+       # Agregace po týdnech
+       weekly_counts = {}
+       for record in records:
+           week_start = record.timestamp - timedelta(days=record.timestamp.weekday())
+           weekly_counts[week_start.date()] = weekly_counts.get(week_start.date(), 0) + 1
+
+       result = [
+           ActivityDataPoint(
+               label=f'Týden {week.isocalendar()[1]}',
+               count=count
+           )
+           for week, count in sorted(weekly_counts.items())
+       ]
+
+       return result
+
+   except Exception as e:
+       logger.error(f"Error in weekly aggregation: {e}", exc_info=True)
+       return []

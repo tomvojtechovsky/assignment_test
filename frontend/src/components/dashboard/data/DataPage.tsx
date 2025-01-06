@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Card from '../shared/Card';
+import {Card} from '../shared/Card';
 import { useTableData } from '../../../hooks/useTableData';
 import { useFilters } from '../../../context/FiltersContext';
 import DataTable from './table/DataTable';
@@ -17,7 +17,7 @@ export default function DataPage() {
     page: currentPage,
     totalPages,
     setPage: setQueryPage
-  } = useTableData(15, page, dataType, dateRange);
+  } = useTableData(15, page);
 
   // Funkce pro změnu stránky
   const handlePageChange = (newPage: number) => {

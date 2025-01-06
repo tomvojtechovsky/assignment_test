@@ -1,3 +1,4 @@
+#backend\schema\query\messages\__init__.py
 import strawberry
 from typing import Optional
 from .resolver import get_messages

@@ -1,3 +1,4 @@
+//frontend\src\components\dashboard\layout\DashboardLayout.tsx
 import Header from '../../shared/Header';
 import Sidebar from './Sidebar';
 import GlobalFilters from '../../filters/global/GlobalFilters';

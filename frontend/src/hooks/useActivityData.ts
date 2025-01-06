@@ -1,40 +1,37 @@
 // frontend/src/hooks/useActivityData.ts
 import { useQuery } from '@apollo/client';
 import { GET_ACTIVITY_DATA } from '../graphql/queries/getActivityData';
-import { useState, useEffect } from 'react';
+import { TimeFilterType } from '../context/FiltersContext';
+import { DataType } from '../components/filters/global/types/filters';
 
-// Typy a rozhraní
 interface ActivityDataPoint {
   label: string;
   count: number;
 }
 
 interface ActivityDataResponse {
-  activityData: ActivityDataPoint[]; // GraphQL vrací camelCase
+  activityData: ActivityDataPoint[];
 }
 
-export type TimePeriod = 'week' | 'month' | 'year';
-
-// Hook pro získání dat o aktivitě
-export function useActivityData(timePeriod: TimePeriod) {
-  const { data, loading, error } = useQuery<ActivityDataResponse>(GET_ACTIVITY_DATA, {
-    variables: { period: timePeriod },
-    // Polling pro aktuální data každých 30 sekund
-    pollInterval: 30000,
+export function useActivityData(
+  period: TimeFilterType, 
+  startDate: Date | null = null, 
+  endDate: Date | null = null,
+  type: DataType = 'all'
+) {
+  const { data, loading, error } = useQuery<{ activityData: ActivityDataPoint[] }>(GET_ACTIVITY_DATA, {
+    variables: {
+      period,
+      startDate: period === 'all' ? null : (period === 'custom' && startDate ? startDate.toISOString() : null),
+      endDate: period === 'all' ? null : (period === 'custom' && endDate ? endDate.toISOString() : null),
+      type: type === 'all' ? null : type
+    },
   });
 
-  const [processedData, setProcessedData] = useState<ActivityDataPoint[]>([]);
-
-  useEffect(() => {
-    if (data?.activityData) {
-      setProcessedData(data.activityData);
-    }
-  }, [data]);
-
   return {
-    data: processedData,
+    data: data?.activityData || [],
     loading,
     error,
-    isEmpty: !loading && (!processedData || processedData.length === 0)
+    isEmpty: !loading && (!data?.activityData || data.activityData.length === 0)
   };
 }

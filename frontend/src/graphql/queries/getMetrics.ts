@@ -2,8 +2,16 @@
 import { gql } from '@apollo/client';
 
 export const GET_METRICS = gql`
-  query GetMetrics($type: String, $startDate: String, $endDate: String) {
-    metrics(type: $type, startDate: $startDate, endDate: $endDate) {
+  query GetMetrics(
+    $type: String, 
+    $startDate: String, 
+    $endDate: String
+  ) {
+    metrics(
+      type: $type, 
+      startDate: $startDate, 
+      endDate: $endDate
+    ) {
       totalCount
       syslogCount
       dataflowCount

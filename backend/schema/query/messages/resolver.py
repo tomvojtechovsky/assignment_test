@@ -1,3 +1,4 @@
+#backend\schema\query\messages\resolver.py
 import strawberry
 from typing import List, Union, Optional
 from datetime import datetime
@@ -8,8 +9,8 @@ async def get_messages(
     limit: int = 500, 
     offset: int = 0,
     type: str | None = None,
-    startDate: str | None = None,  # Změna na startDate
-    endDate: str | None = None     # Změna na endDate
+    startDate: str | None = None,
+    endDate: str | None = None
 ) -> MessagesResponse:
     # Základní query s řazením od nejnovějších
     query = Record.find({}, with_children=True).sort('-timestamp')
@@ -20,9 +21,24 @@ async def get_messages(
 
     # Filtr podle datového rozsahu
     if startDate and endDate:
+        # Oba data jsou vyplněny - filtruj rozsah
         query = query.find({
             'timestamp': {
                 '$gte': datetime.fromisoformat(startDate.replace('Z', '')),
+                '$lte': datetime.fromisoformat(endDate.replace('Z', ''))
+            }
+        })
+    elif startDate:
+        # Jen počáteční datum - filtruj od tohoto data
+        query = query.find({
+            'timestamp': {
+                '$gte': datetime.fromisoformat(startDate.replace('Z', ''))
+            }
+        })
+    elif endDate:
+        # Jen koncové datum - filtruj do tohoto data
+        query = query.find({
+            'timestamp': {
                 '$lte': datetime.fromisoformat(endDate.replace('Z', ''))
             }
         })

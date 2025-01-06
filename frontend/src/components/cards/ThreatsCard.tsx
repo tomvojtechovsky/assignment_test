@@ -1,4 +1,4 @@
-import Card from '../dashboard/shared/Card';
+import {Card} from '../dashboard/shared/Card';
 import { useMetrics } from '../../hooks/useMetrics';
 
 export default function ThreatsCard() {

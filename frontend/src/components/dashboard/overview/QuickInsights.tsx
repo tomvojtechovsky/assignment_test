@@ -1,5 +1,5 @@
 // frontend/src/components/dashboard/overview/QuickInsights.tsx
-import Card from '../shared/Card';
+import {Card} from '../shared/Card';
 import ActivityLineChart from './charts/ActivityLineChart';
 
 export default function QuickInsights() {

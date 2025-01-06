@@ -1,16 +1,31 @@
-#backend\app.py
+# backend\app.py
 import asyncio
 import datetime
 import random
-from contextlib import asynccontextmanager
+import logging
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from backend.db.data_messages import DataflowData, Record, SyslogData
 from backend.db.users import User
 from backend.router import router
 from backend.utils import init_models
+
+# Nastavení logování
+# Nastavte root logger
+logging.basicConfig(
+    level=logging.INFO,  # Změňte na DEBUG pro více informací
+    format='%(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),  # Výstup do konzole
+        logging.FileHandler('debug.log', encoding='utf-8')  # Log do souboru
+    ]
+)
+logger = logging.getLogger(__name__)
+
+logging.getLogger('backend').setLevel(logging.INFO)
+logging.getLogger('strawberry').setLevel(logging.INFO)
 
 SYSLOG_TEXT = [
     "generating core.3956",
@@ -34,6 +49,7 @@ ATTACK_TYPES = [
     "MITM",
 ]
 
+# Helper functions for generating random data
 def _random_ip() -> str:
     return ".".join([str(random.randint(1, 255)) for _ in range(4)])
 
@@ -115,7 +131,6 @@ async def generate_message():
     await message.insert()
 
 
-
 async def drop_db():
     await Record.find_all(with_children=True).delete()
     await User.delete_all()
@@ -144,6 +159,7 @@ async def lifespan(_: FastAPI):
 
 
 def get_app() -> FastAPI:
+    logger.info("Starting FastAPI application...")
     app = FastAPI(title="Web Developer Challenge", lifespan=lifespan)
 
     app.include_router(router)
@@ -154,5 +170,6 @@ def get_app() -> FastAPI:
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
     )
-
+    
+    logger.info("FastAPI application started successfully.")
     return app

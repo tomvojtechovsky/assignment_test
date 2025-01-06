@@ -1,4 +1,4 @@
-// filters.ts
+// frontend\src\components\filters\global\types\filters.ts
 export type DataType = 'all' | 'syslog' | 'dataflow';
 export type AttackType = 'all' | 'botnet' | 'ddos' | 'malware' | 'scanning' | 'worm' | 'hijacking' | 'MITM' | 'benign';
 

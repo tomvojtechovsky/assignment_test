@@ -1,6 +1,6 @@
 // components/dashboard/data/table/DataTable.tsx
 import { useState } from 'react';
-import Card from '../../shared/Card';
+import {Card} from '../../shared/Card';
 import TableRow from './TableRow';
 
 interface DataTableProps {
@@ -9,7 +9,7 @@ interface DataTableProps {
 }
 
 export default function DataTable({ data, loading }: DataTableProps) {
- const [visibleColumns] = useState([
+ const [visibleColumns] = useState<(keyof typeof columnHeaders)[]>([
    'timestamp', 
    'probeIp', 
    'probeName', 

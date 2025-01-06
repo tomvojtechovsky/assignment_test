@@ -1,3 +1,4 @@
+# backend/schema/query/messages/metrics_resolver.py
 from typing import List
 from datetime import datetime, timedelta
 from backend.db.data_messages import Record
@@ -23,14 +24,28 @@ async def get_messages_metrics(
                 '$lte': datetime.fromisoformat(endDate.replace('Z', ''))
             }
         })
+    elif startDate:
+        query = query.find({
+            'timestamp': {
+                '$gte': datetime.fromisoformat(startDate.replace('Z', ''))
+            }
+        })
+    elif endDate:
+        query = query.find({
+            'timestamp': {
+                '$lte': datetime.fromisoformat(endDate.replace('Z', ''))
+            }
+        })
 
     # Získáme všechny záznamy pro výpočet metrik
     records = await query.to_list()
-    
-    # Výpočet metrik
     total_count = len(records)
+
+    # Počty podle typů
     syslog_count = len([r for r in records if r.type == "syslog"])
     dataflow_count = len([r for r in records if r.type == "dataflow"])
+    
+    # Počty hrozeb
     threats_count = len([r for r in records if r.threat])
     
     # Výpočet útoků podle typu

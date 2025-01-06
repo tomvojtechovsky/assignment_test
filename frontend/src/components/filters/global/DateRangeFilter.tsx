@@ -1,104 +1,172 @@
+// frontend/src/components/filters/global/DateRangeFilter.tsx
 import React, { useState } from 'react';
 import DatePicker, { registerLocale } from "react-datepicker";
-import { cs } from "date-fns/locale/cs"; // the locale you want
-registerLocale("el", cs); // register it with the name you want
+import { cs } from "date-fns/locale/cs";
 import 'react-datepicker/dist/react-datepicker.css';
-import { CalendarContainer } from 'react-datepicker';
 import { useFilters } from '../../../context/FiltersContext';
+import { TimeFilterType } from '../../../context/FiltersContext';
+
+// Registrace české lokalizace
+registerLocale("cs", cs);
+
+// Definice přednastavených časových intervalů
+const timeIntervals = [
+  { value: 'all', label: 'Vše' },
+  { value: 'week', label: 'Poslední týden' },
+  { value: 'month', label: 'Poslední měsíc' },
+  { value: 'year', label: 'Poslední rok' },
+  { value: 'custom', label: 'Vlastní období' }
+];
 
 export default function DateRangeFilter() {
-    const { dateRange, setDateRange } = useFilters();
-    const [isOpen, setIsOpen] = useState(false);
+  const { dateRange, setPresetRange, setCustomRange, resetDateRange } = useFilters();
+  const [isStartPickerOpen, setIsStartPickerOpen] = useState(false);
+  const [isEndPickerOpen, setIsEndPickerOpen] = useState(false);
 
-    const handleDateChange = (dates: [Date | null, Date | null]) => {
-        const [start, end] = dates;
-        setDateRange({ start, end });
+  // Výběr přednastavené periody
+  const handleIntervalChange = (interval: TimeFilterType) => { // Změníme typ parametru
+    if (interval === 'custom') {
+      setPresetRange('custom');
+    } else {
+      setPresetRange(interval);
+    }
+  };
 
-        // Zavřít kalendář, pokud jsou vybrány obě datum
-        if (start && end) {
-            setIsOpen(false);
-        }
-    };
+  // Handler pro výběr počátečního data
+  const handleStartDateSelect = (date: Date | null) => {
+    if (!date) return;
+    setCustomRange(date, dateRange.end);
+    setIsStartPickerOpen(false);
+  };
 
-    const formatDateDisplay = (date: Date | null) => {
-        return date ? date.toLocaleDateString() : 'Vybrat';
-    };
+  // Handler pro výběr koncového data
+  const handleEndDateSelect = (date: Date | null) => {
+    if (!date) return;
+    setCustomRange(dateRange.start, date);
+    setIsEndPickerOpen(false);
+  };
 
-    const clearDates = () => {
-        setDateRange({ start: null, end: null });
-        setIsOpen(false);
-    };
+  // Individuální mazání dat
+  const handleClearDate = (type: 'start' | 'end') => {
+    if (type === 'start') {
+      setCustomRange(null, dateRange.end);
+    } else {
+      setCustomRange(dateRange.start, null);
+    }
+  };
 
-    const MyContainer = ({ className, children }: { className?: string; children: React.ReactNode }) => {
-        return (
-            <div style={{ padding: "16px", background: "#eee", display: "flex", flexDirection: "column", alignItems: "center", border: "1px solid #aeaeae" }}>
-                <CalendarContainer className={className}>
-                    <div>
-                        <div style={{ position: "relative" }}>{children}</div>
-                    </div>
+  // Formátování data pro zobrazení
+  const formatDate = (date: Date | null) => {
+    return date ? date.toLocaleDateString('cs') : 'Vybrat';
+  };
 
-                </CalendarContainer>
-                <button
-                    onClick={() => setIsOpen(false)}
-                    className="mt-2 px-3 py-1 rounded-full text-sm font-medium border border-gray-600 text-gray-600 hover:bg-gray-100 transition-all"
-                >
-                    Zavřít
-                </button>
-            </div>
-        );
-    };
+  return (
+    <div className="flex flex-col space-y-2">
+      <span className="text-sm font-medium text-gray-600">Časové období</span>
+      <div className="flex space-x-2 items-center">
+        {/* Dropdown pro přednastavené intervaly */}
+        <div className="flex items-center space-x-2">
+          <select
+            value={dateRange.type}
+            onChange={(e) => handleIntervalChange(e.target.value as TimeFilterType)}
+            className="px-3 py-1 rounded-lg text-sm border border-gray-300"
+          >
+            {timeIntervals.map(({ value, label }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
 
-    return (
-        <div className="flex flex-col space-y-2">
-            <span className="text-sm font-medium text-gray-600">Čas</span>
-            <div className="relative">
-                <div className="flex space-x-2">
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className={`
-              px-3 py-1 rounded-full text-sm font-medium transition-all
-              ${dateRange.start ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
-            `}
-                    >
-                        Od: {formatDateDisplay(dateRange.start)}
-                    </button>
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className={`
-              px-3 py-1 rounded-full text-sm font-medium transition-all
-              ${dateRange.end ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
-            `}
-                    >
-                        Do: {formatDateDisplay(dateRange.end)}
-                    </button>
-                    {(dateRange.start || dateRange.end) && (
-                        <button
-                            onClick={clearDates}
-                            className="px-3 py-1 rounded-full text-sm font-medium border border-red-600 text-red-600 hover:bg-red-100 transition-all"
-                        >
-                            Zrušit
-                        </button>
-                    )}
-                </div>
-                {isOpen && (
-                    <div className="absolute z-10 mt-2" style={{ width: 'max-content' }}>
-                        <DatePicker
-                            showIcon
-                            selected={dateRange.start || undefined}
-                            onChange={handleDateChange}
-                            startDate={dateRange.start || undefined}
-                            endDate={dateRange.end || undefined}
-                            selectsRange
-                            inline
-                            locale={cs}
-                            calendarContainer={MyContainer}
-                            isClearable
-                            dateFormat="Pp"
-                        />
-
-                    </div>
-                )}
-            </div>
+          {/* Reset tlačítko */}
+          {dateRange.type !== 'all' && (
+            <button
+              onClick={() => resetDateRange()}
+              className="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100 border border-gray-300"
+              title="Reset filtru"
+            >
+              Zrušit výběr ✕
+            </button>
+          )}
         </div>
-    );
+
+        {/* Datové pole pro počáteční datum */}
+        {dateRange.type === 'custom' && (
+          <div className="relative">
+            <button
+              onClick={() => setIsStartPickerOpen(true)}
+              className="flex items-center space-x-2 px-3 py-1 rounded-lg text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all"
+            >
+              <span>Od: {formatDate(dateRange.start)}</span>
+              {dateRange.start && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClearDate('start');
+                  }}
+                  className="ml-2 text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              )}
+            </button>
+
+            {isStartPickerOpen && (
+              <div className="absolute z-50 mt-2">
+                <DatePicker
+                  selected={dateRange.start}
+                  onChange={handleStartDateSelect}
+                  selectsStart
+                  startDate={dateRange.start || undefined}
+                  endDate={dateRange.end || undefined}
+                  inline
+                  locale="cs"
+                  maxDate={new Date()}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Datové pole pro koncové datum */}
+        {dateRange.type === 'custom' && (
+          <div className="relative">
+            <button
+              onClick={() => setIsEndPickerOpen(true)}
+              className="flex items-center space-x-2 px-3 py-1 rounded-lg text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all"
+            >
+              <span>Do: {formatDate(dateRange.end)}</span>
+              {dateRange.end && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClearDate('end');
+                  }}
+                  className="ml-2 text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              )}
+            </button>
+
+            {isEndPickerOpen && (
+              <div className="absolute z-50 mt-2">
+                <DatePicker
+                  selected={dateRange.end}
+                  onChange={handleEndDateSelect}
+                  selectsEnd
+                  startDate={dateRange.start || undefined}
+                  endDate={dateRange.end || undefined}
+                  minDate={dateRange.start || undefined}
+                  inline
+                  locale="cs"
+                  maxDate={new Date()}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

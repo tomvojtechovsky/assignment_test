@@ -1,6 +1,6 @@
 // components/dashboard/data/table/TableRowDetail.tsx
 import { useMemo } from 'react';
-import Card from '../../shared/Card';
+import {Card} from '../../shared/Card';
 
 interface TableRowDetailProps {
  rowData: any;  // Later we'll use a more specific type

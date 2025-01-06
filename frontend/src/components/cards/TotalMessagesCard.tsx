@@ -1,5 +1,5 @@
 // components/cards/TotalMessagesCard.tsx
-import Card from '../dashboard/shared/Card';
+import {Card} from '../dashboard/shared/Card';
 
 interface TotalMessagesMetrics {
   total: number;

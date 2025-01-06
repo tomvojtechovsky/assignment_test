@@ -20,7 +20,7 @@ lint:
 run-backend:
 	.\.assignment\Scripts\activate && \
 	docker-compose up -d && \
-	uvicorn backend.app:get_app --reload --factory
+	uvicorn backend.app:get_app --reload --log-level debug
 
 stop-database:
 	docker-compose down
