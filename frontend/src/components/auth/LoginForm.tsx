@@ -6,36 +6,35 @@ import { LOGIN_MUTATION } from '../../graphql/mutations';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginForm() {
- const [username, setUsername] = useState('');
- const [password, setPassword] = useState('');
- const [error, setError] = useState('');
- const [loading, setLoading] = useState(false);
- const navigate = useNavigate();
- const { login } = useAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
- // GraphQL mutation hook
- const [loginMutation] = useMutation(LOGIN_MUTATION);
+  const [loginMutation] = useMutation(LOGIN_MUTATION);
 
- const handleSubmit = async (e: React.FormEvent) => {
-   e.preventDefault();
-   setError('');
-   setLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-   try {
-     const { data } = await loginMutation({
-       variables: { username, password }
-     });
+    try {
+      const { data } = await loginMutation({
+        variables: { username, password }
+      });
 
-     if (data?.auth?.login) {
-       login(data.auth.login);
-       navigate('/dashboard');
-     }
-   } catch (err) {
-     setError('Invalid credentials');
-   } finally {
-     setLoading(false);
-   }
- };
+      if (data?.auth?.login) {
+        login(data.auth.login);
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      setError('Nesprávné přihlašovací údaje');
+    } finally {
+      setLoading(false);
+    }
+  };
 
  return (
    <form onSubmit={handleSubmit} className="space-y-6">

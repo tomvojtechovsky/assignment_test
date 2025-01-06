@@ -1,19 +1,57 @@
 # backend\app.py
+import strawberry
 import asyncio
 import datetime
 import random
 import logging
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from typing import Any
+from strawberry.fastapi import GraphQLRouter  # Import GraphQLRouter
+
 from fastapi.middleware.cors import CORSMiddleware
+from strawberry.fastapi import BaseContext  # přidejte tento import
+
 from backend.db.data_messages import DataflowData, Record, SyslogData
 from backend.db.users import User
 from backend.router import router
 from backend.utils import init_models
 
+from backend.middleware.auth import auth_middleware
+from backend.schema.middleware import AuthMiddleware
+from backend.schema.mutations import Mutation  # přidejte tento řádek
+
+from backend.schema.query import Query  # Import Query třídy pro GraphQL
+
+from backend.services.authorization_service import AuthorizationService  # změňte import
+
+# Nastavení schématu pro GraphQL - schema musí být definováno před použitím
+schema = strawberry.Schema(
+    query=Query,
+    mutation=Mutation  # přidejte tento řádek
+)
+
+# Vytvořte instanci AuthorizationService
+auth_service = AuthorizationService()  # změňte název třídy
+
+class GraphQLContext(BaseContext):  # přidejte dědičnost z BaseContext
+    def __init__(self, request: Request, auth_service: AuthorizationService):
+        super().__init__()  # zavoláme konstruktor předka
+        self.request = request
+        self.auth_service = auth_service
+        self.response = None
+
+async def get_context(request: Request) -> GraphQLContext:
+    return GraphQLContext(
+        request=request,
+        auth_service=auth_service
+    )
+    
+# Logování pro kontrolu schématu
+logging.debug(f"GraphQL schema created: {schema}")
+
 # Nastavení logování
-# Nastavte root logger
 logging.basicConfig(
     level=logging.INFO,  # Změňte na DEBUG pro více informací
     format='%(name)s - %(levelname)s - %(message)s',
@@ -162,7 +200,18 @@ def get_app() -> FastAPI:
     logger.info("Starting FastAPI application...")
     app = FastAPI(title="Web Developer Challenge", lifespan=lifespan)
 
-    app.include_router(router)
+    # Přidání middleware pro ověřování autentifikace
+    app.middleware("http")(auth_middleware)
+    
+    # Přidání GraphQL routeru s cestou
+    app.include_router(
+        GraphQLRouter(
+            schema=schema,
+            context_getter=get_context
+        ),
+        prefix="/graphql"
+    )
+    # Přidání CORS middleware pro povolení přístupu z různých zdrojů
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["http://localhost", "http://localhost:5173", "http://127.0.0.1", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174"],

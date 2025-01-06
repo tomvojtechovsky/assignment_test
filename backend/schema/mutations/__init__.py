@@ -1,3 +1,4 @@
+# backend\schema\mutations\__init__.py
 import strawberry
 
 from backend.schema.mutations.auth import AuthorizationMutations
