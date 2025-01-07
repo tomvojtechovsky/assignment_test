@@ -9,13 +9,9 @@ interface AttackTypeCount {
 export default function CommonAttackCard() {
   const { metrics, loading } = useMetrics();
 
-  // Najdi nejčastější typ útoku
   const getMostCommonAttack = (): AttackTypeCount | null => {
-    console.log(metrics.attacksByType);
-
     if (loading || !metrics.attacksByType || Object.keys(metrics.attacksByType).length === 0) return null;
 
-    // Convert the object to an array and assert the type
     const attacksArray = Object.values(metrics.attacksByType) as unknown as AttackTypeCount[];
 
     return attacksArray.reduce((max, attack) => 
@@ -25,33 +21,30 @@ export default function CommonAttackCard() {
   const mostCommonAttack = getMostCommonAttack();
 
   return (
-    <Card className="relative">
-      <div className="absolute top-4 right-4 text-yellow-500">
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </div>
+    <Card className="relative p-6 shadow-md rounded-lg bg-white text-gray-800 border border-gray-200">
+      {/* Jemná horizontální linie jako grafický prvek */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-yellow-500 rounded-md"></div>
 
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-700">Nejčastější útok</h3>
+      <div className="text-center">
+        <h3 className="text-xl font-medium text-gray-500 mb-4">Nejčastější útok</h3>
 
         {loading ? (
-          <div className="animate-pulse h-8 bg-gray-200 rounded mt-2"></div>
+          <div className="animate-pulse h-8 bg-gray-300 rounded mt-2 mx-auto w-24"></div>
         ) : (
           mostCommonAttack ? (
             <>
-              <div className="mt-2">
-                <span className="text-3xl font-bold text-yellow-600">
+              <div className="mt-4">
+                <span className="text-4xl font-bold text-gray-700">
                   {mostCommonAttack.attackType}
                 </span>
                 <br />
-                <span className="ml-2 text-sm text-gray-600">
+                <span className="ml-2 text-sm text-gray-500">
                   ({mostCommonAttack.count} výskytů)
                 </span>
               </div>
 
-              <div className="mt-4 text-sm text-gray-600">
-                <span className='me-1'>Podíl na všech hrozbách: </span>
+              <div className="mt-6 text-sm text-gray-600">
+                <span className="mr-1">Podíl na všech hrozbách: </span>
                 {mostCommonAttack.count > 0 && metrics.threatsCount > 0
                   ? `${((mostCommonAttack.count / metrics.threatsCount) * 100).toFixed(1)} %`
                   : '0 %'}

@@ -1,5 +1,4 @@
-// components/cards/TotalMessagesCard.tsx
-import {Card} from '../dashboard/shared/Card';
+import { Card } from '../dashboard/shared/Card';
 
 interface TotalMessagesMetrics {
   total: number;
@@ -14,20 +13,16 @@ interface TotalMessagesCardProps {
 
 export default function TotalMessagesCard({ metrics, loading = false }: TotalMessagesCardProps) {
   return (
-    <Card className="relative">
-      {/* Ikona */}
-      <div className="absolute top-4 right-4 text-blue-500">
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      </div>
+    <Card className="relative p-6 shadow-md rounded-lg bg-white text-gray-800 border border-gray-200">
+      {/* Jemná horizontální linie jako grafický prvek */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-blue-500 rounded-md"></div>
 
       {/* Obsah */}
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-700">Celkem zpráv</h3>
+      <div className="text-center">
+        <h3 className="text-xl font-medium text-gray-500 mb-4">Celkem zpráv</h3>
         
         {loading ? (
-          <div className="animate-pulse h-8 bg-gray-200 rounded mt-2"></div>
+          <div className="animate-pulse h-8 bg-gray-300 rounded mt-2 mx-auto w-24"></div>
         ) : (
           <>
             <div className="mt-2">

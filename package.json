@@ -1,9 +1,13 @@
 {
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@types/geoip-lite": "^1.4.4",
     "@types/ol": "^7.0.0",
     "geoip-lite": "^1.4.10",
     "ol": "^10.3.1",
     "ol-react": "^0.1.5"
+  },
+  "devDependencies": {
+    "@types/react-fontawesome": "^1.6.8"
   }
 }

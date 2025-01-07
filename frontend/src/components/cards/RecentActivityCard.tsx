@@ -1,10 +1,9 @@
-import {Card} from '../dashboard/shared/Card';
+import { Card } from '../dashboard/shared/Card';
 import { useMetrics } from '../../hooks/useMetrics';
 
 export default function RecentActivityCard() {
   const { metrics, loading } = useMetrics();
 
-  // Určení trendu aktivity
   const getTrend = () => {
     const totalMessages = metrics.total;
     const last24hMessages = metrics.last24hCount;
@@ -20,46 +19,41 @@ export default function RecentActivityCard() {
 
   const trend = getTrend();
 
-  // Mapování trendu na vizuální prvky
   const trendInfo = {
     high: { 
-      color: 'text-red-600', 
-      icon: '🔥', 
-      text: 'Vysoká aktivita' 
+      icon: '🔥', // Příklad s textem místo ikony
+      text: 'Vysoká aktivita',
+      color: 'text-red-600' 
     },
     low: { 
-      color: 'text-green-600', 
-      icon: '😌', 
-      text: 'Nízká aktivita' 
+      icon: '😌', // Příklad s textem místo ikony
+      text: 'Nízká aktivita',
+      color: 'text-green-600' 
     },
     normal: { 
-      color: 'text-blue-600', 
-      icon: '📊', 
-      text: 'Normální aktivita' 
+      icon: '📊', // Příklad s textem místo ikony
+      text: 'Normální aktivita',
+      color: 'text-blue-600' 
     },
     stable: { 
-      color: 'text-gray-600', 
-      icon: '😐', 
-      text: 'Stabilní aktivita' 
+      icon: '😐', // Příklad s textem místo ikony
+      text: 'Stabilní aktivita',
+      color: 'text-gray-600' 
     }
   };
 
   return (
-    <Card className="relative">
-      <div className="absolute top-4 right-4 text-blue-500">
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      </div>
+    <Card className="relative p-6 shadow-md rounded-lg bg-white text-gray-800 border border-gray-200">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-blue-500 rounded-md"></div>
 
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-700">Aktivita za 24h</h3>
-        
+      <div className="text-center">
+        <h3 className="text-xl font-medium text-gray-500 mb-4">Aktivita za 24h</h3>
+
         {loading ? (
-          <div className="animate-pulse h-8 bg-gray-200 rounded mt-2"></div>
+          <div className="animate-pulse h-8 bg-gray-300 rounded mt-2 mx-auto w-24"></div>
         ) : (
           <>
-            <div className="mt-2 flex items-center">
+            <div className="mt-2 flex items-center justify-center">
               <span className={`text-3xl font-bold ${trendInfo[trend].color}`}>
                 {metrics.last24hCount}
               </span>
@@ -68,7 +62,7 @@ export default function RecentActivityCard() {
               </span>
             </div>
             
-            <div className="mt-4 flex items-center text-sm">
+            <div className="mt-4 flex items-center justify-center text-sm">
               <span className="mr-2 text-2xl">{trendInfo[trend].icon}</span>
               <span className={`${trendInfo[trend].color}`}>
                 {trendInfo[trend].text}
