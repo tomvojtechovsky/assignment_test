@@ -84,8 +84,8 @@ export default function LoginForm() {
        disabled={loading}
        className={`w-full py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
          ${loading 
-           ? 'bg-blue-300 cursor-not-allowed' 
-           : 'bg-blue-500 hover:bg-blue-600'} text-white`}
+           ? 'bg-type-all cursor-not-allowed' 
+           : 'bg-type-all hover:bg-type-all/90'} text-white`}
      >
        {loading ? 'Přihlašování...' : 'Přihlásit se'}
      </button>

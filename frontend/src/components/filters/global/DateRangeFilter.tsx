@@ -61,15 +61,15 @@ export default function DateRangeFilter() {
   };
 
   return (
-    <div className="flex flex-col space-y-2">
-      <span className="text-sm font-medium text-gray-600">Časové období</span>
-      <div className="flex space-x-2 items-center">
+    <div className="flex flex-col space-y-1 sm:space-y-2">
+      <span className="text-xs sm:text-sm font-medium text-gray-600">Časové období</span>
+      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 items-start sm:items-center">
         {/* Dropdown pro přednastavené intervaly */}
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
           <select
             value={dateRange.type}
             onChange={(e) => handleIntervalChange(e.target.value as TimeFilterType)}
-            className="px-3 py-1 rounded-lg text-sm border border-gray-300"
+            className="w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm border border-gray-300"
           >
             {timeIntervals.map(({ value, label }) => (
               <option key={value} value={value}>
@@ -82,7 +82,7 @@ export default function DateRangeFilter() {
           {dateRange.type !== 'all' && (
             <button
               onClick={() => resetDateRange()}
-              className="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100 border border-gray-300"
+              className="w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm text-gray-600 hover:bg-gray-100 border border-gray-300"
               title="Reset filtru"
             >
               Zrušit výběr ✕
@@ -90,80 +90,81 @@ export default function DateRangeFilter() {
           )}
         </div>
 
-        {/* Datové pole pro počáteční datum */}
+        {/* Custom date pickers */}
         {dateRange.type === 'custom' && (
-          <div className="relative">
-            <button
-              onClick={() => setIsStartPickerOpen(true)}
-              className="flex items-center space-x-2 px-3 py-1 rounded-lg text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all"
-            >
-              <span>Od: {formatDate(dateRange.start)}</span>
-              {dateRange.start && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClearDate('start');
-                  }}
-                  className="ml-2 text-gray-400 hover:text-gray-600"
-                >
-                  ✕
-                </button>
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full">
+            {/* Počáteční datum */}
+            <div className="relative w-full">
+              <button
+                onClick={() => setIsStartPickerOpen(true)}
+                className="w-full flex items-center justify-between space-x-2 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all"
+              >
+                <span>Od: {formatDate(dateRange.start)}</span>
+                {dateRange.start && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClearDate('start');
+                    }}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    ✕
+                  </button>
+                )}
+              </button>
+
+              {isStartPickerOpen && (
+                <div className="absolute z-50 mt-2">
+                  <DatePicker
+                    selected={dateRange.start}
+                    onChange={handleStartDateSelect}
+                    selectsStart
+                    startDate={dateRange.start || undefined}
+                    endDate={dateRange.end || undefined}
+                    inline
+                    locale="cs"
+                    maxDate={new Date()}
+                  />
+                </div>
               )}
-            </button>
+            </div>
 
-            {isStartPickerOpen && (
-              <div className="absolute z-50 mt-2">
-                <DatePicker
-                  selected={dateRange.start}
-                  onChange={handleStartDateSelect}
-                  selectsStart
-                  startDate={dateRange.start || undefined}
-                  endDate={dateRange.end || undefined}
-                  inline
-                  locale="cs"
-                  maxDate={new Date()}
-                />
-              </div>
-            )}
-          </div>
-        )}
+            {/* Koncové datum */}
+            <div className="relative w-full">
+              <button
+                onClick={() => setIsEndPickerOpen(true)}
+                className="w-full flex items-center justify-between space-x-2 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all"
+              >
+                <span>Do: {formatDate(dateRange.end)}</span>
+                {dateRange.end && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClearDate('end');
+                    }}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    ✕
+                  </button>
+                )}
+              </button>
 
-        {/* Datové pole pro koncové datum */}
-        {dateRange.type === 'custom' && (
-          <div className="relative">
-            <button
-              onClick={() => setIsEndPickerOpen(true)}
-              className="flex items-center space-x-2 px-3 py-1 rounded-lg text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all"
-            >
-              <span>Do: {formatDate(dateRange.end)}</span>
-              {dateRange.end && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClearDate('end');
-                  }}
-                  className="ml-2 text-gray-400 hover:text-gray-600"
-                >
-                  ✕
-                </button>
+              {isEndPickerOpen && (
+                <div className="absolute z-50 mt-2">
+                  <DatePicker
+                    selected={dateRange.end}
+                    onChange={handleEndDateSelect}
+                    selectsEnd
+                    startDate={dateRange.start || undefined}
+                    endDate={dateRange.end || undefined}
+                    minDate={dateRange.start || undefined}
+                    inline
+                    locale="cs"
+                    maxDate={new Date()}
+                  />
+                </div>
               )}
-            </button>
-
-            {isEndPickerOpen && (
-              <div className="absolute z-50 mt-2">
-                <DatePicker
-                  selected={dateRange.end}
-                  onChange={handleEndDateSelect}
-                  selectsEnd
-                  startDate={dateRange.start || undefined}
-                  endDate={dateRange.end || undefined}
-                  minDate={dateRange.start || undefined}
-                  inline
-                  locale="cs"
-                  maxDate={new Date()}
-                />
-              </div>
-            )}
+            </div>
           </div>
         )}
       </div>

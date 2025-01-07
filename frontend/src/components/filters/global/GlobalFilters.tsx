@@ -6,9 +6,9 @@ import DateRangeFilter from './DateRangeFilter';
 
 export default function GlobalFilters() {
   return (
-    <CardStyled className="mx-6 mt-4 bg-gray-200">
-      <div className="space-y-4">
-        <div className="flex flex-wrap gap-4">
+    <CardStyled className="bg-gray-200">
+      <div className="space-y-2 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
           <TypeFilter />
           <DateRangeFilter />
           {/*<AttackTypeFilter /> */}

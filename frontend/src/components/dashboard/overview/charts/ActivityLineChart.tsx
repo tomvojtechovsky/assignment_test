@@ -116,11 +116,11 @@ export default function ActivityChart() {
     };
 
     return (
-        <div className="w-full h-[400px] bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-                <div className="space-y-1">
-                    <h3 className="text-lg font-semibold text-gray-700">Aktivita systému</h3>
-                    <div className="flex items-center space-x-2 text-sm">
+        <div className="w-full bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6">
+                <div className="space-y-1 text-center sm:text-left w-full">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-700">Aktivita systému</h3>
+                    <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start space-y-1 sm:space-y-0 sm:space-x-2 text-xs sm:text-sm">
                         <span className="font-medium text-gray-600">
                             Průměrně {averageStats.value} {averageStats.text}
                         </span>
