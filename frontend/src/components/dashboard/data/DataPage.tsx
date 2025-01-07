@@ -1,3 +1,4 @@
+// frontend\src\components\dashboard\data\DataPage.tsx
 import { useState, useEffect } from 'react';
 import {Card} from '../shared/Card';
 import { useTableData } from '../../../hooks/useTableData';

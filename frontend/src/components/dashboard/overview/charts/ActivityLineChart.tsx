@@ -13,9 +13,12 @@ import {
 } from 'recharts';
 import { useActivityData } from '../../../../hooks/useActivityData';
 import { useFilters } from '../../../../context/FiltersContext';
+import { useTypeColor } from '../../../../hooks/useTypeColor';
 
 export default function ActivityChart() {
     const { dateRange, dataType } = useFilters();
+    const typeColors = useTypeColor(dataType);  // Získáme barvy podle aktuálního typu
+
     const { data, loading, error, isEmpty } = useActivityData(
         dateRange.type,
         dateRange.type === 'custom' ? dateRange.start : null,
@@ -97,15 +100,16 @@ export default function ActivityChart() {
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (!active || !payload) return null;
 
-        const count = payload[0]?.value || 0;
-        const cumulative = payload[1]?.value || 0;
-
         return (
             <div className="bg-white p-4 shadow-lg border rounded-lg">
                 <p className="font-semibold mb-2">{label}</p>
                 <div className="space-y-1">
-                    <p className="text-blue-600">Počet útoků: {count}</p>
-                    <p className="text-emerald-600">Celkem útoků: {cumulative}</p>
+                    <p className={`text-[${typeColors.getChartColor()}]`}>
+                        Počet útoků: {payload[0]?.value || 0}
+                    </p>
+                    <p className="text-gray-600">
+                        Celkem útoků: {payload[1]?.value || 0}
+                    </p>
                 </div>
             </div>
         );
@@ -156,7 +160,7 @@ export default function ActivityChart() {
                     <Bar
                         yAxisId="left"
                         dataKey="count"
-                        fill="#3b82f6"
+                        fill={typeColors.getChartColor()}  // Použití dynamické barvy
                         name="Počet útoků"
                         radius={[4, 4, 0, 0]}
                     />
@@ -164,7 +168,7 @@ export default function ActivityChart() {
                         yAxisId="right"
                         type="stepAfter"
                         dataKey="cumulative"
-                        stroke="#10b981"
+                        stroke="#666666"  // Ponecháme neutrální barvu pro kumulativní data
                         strokeWidth={2}
                         name="Celkem útoků"
                         dot={false}
