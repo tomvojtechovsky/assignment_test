@@ -14,7 +14,7 @@ export default function HeroSection() {
                     alt="CyberFlow Background"
                     className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/80 to-black/70" />
             </div>
 
             {/* Content */}

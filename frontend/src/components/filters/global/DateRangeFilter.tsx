@@ -77,17 +77,6 @@ export default function DateRangeFilter() {
               </option>
             ))}
           </select>
-
-          {/* Reset tlačítko */}
-          {dateRange.type !== 'all' && (
-            <button
-              onClick={() => resetDateRange()}
-              className="w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm text-gray-600 hover:bg-gray-100 border border-gray-300"
-              title="Reset filtru"
-            >
-              Zrušit výběr ✕
-            </button>
-          )}
         </div>
 
         {/* Custom date pickers */}
@@ -97,7 +86,7 @@ export default function DateRangeFilter() {
             <div className="relative w-full">
               <button
                 onClick={() => setIsStartPickerOpen(true)}
-                className="w-full flex items-center justify-between space-x-2 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all"
+                className="w-full flex items-center justify-between space-x-2 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all whitespace-nowrap"
               >
                 <span>Od: {formatDate(dateRange.start)}</span>
                 {dateRange.start && (
@@ -133,7 +122,7 @@ export default function DateRangeFilter() {
             <div className="relative w-full">
               <button
                 onClick={() => setIsEndPickerOpen(true)}
-                className="w-full flex items-center justify-between space-x-2 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all"
+                className="w-full flex items-center justify-between space-x-2 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm font-medium border border-gray-300 hover:bg-gray-50 transition-all whitespace-nowrap"
               >
                 <span>Do: {formatDate(dateRange.end)}</span>
                 {dateRange.end && (
@@ -166,6 +155,16 @@ export default function DateRangeFilter() {
               )}
             </div>
           </div>
+        )}
+        {/* Reset tlačítko */}
+        {dateRange.type !== 'all' && (
+          <button
+            onClick={() => resetDateRange()}
+            className="w-full px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm text-gray-600 hover:bg-gray-100 border border-gray-300 whitespace-nowrap"
+            title="Reset filtru"
+          >
+            Zrušit výběr ✕
+          </button>
         )}
       </div>
     </div>

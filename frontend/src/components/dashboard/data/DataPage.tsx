@@ -34,10 +34,9 @@ export default function DataPage() {
   }, [dataType, dateRange]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-4">
       <Card>
-        <h2 className="text-xl font-semibold">Data</h2>
-
+        
         {loading && <div>Načítání...</div>}
         {error && <div className="text-red-500">Chyba: {error.message}</div>}
 
