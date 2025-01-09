@@ -17,7 +17,7 @@ interface MetricsResponse {
 }
 
 export function useMetrics() {
-    const { dateRange, dataType } = useFilters();
+    const { dateRange, dataType, threat } = useFilters();
 
     // Příprava proměnných pro filtrování
     const type = dataType === 'all' ? null : dataType;
@@ -34,7 +34,8 @@ export function useMetrics() {
         variables: {
             type,
             startDate,
-            endDate
+            endDate,
+            threat
         }
     });
 

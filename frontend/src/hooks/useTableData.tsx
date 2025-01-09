@@ -6,7 +6,7 @@ import { useFilters } from '../context/FiltersContext';
 
 export function useTableData(limit: number = 50, initialPage: number = 1) {
   const [page, setPage] = useState(initialPage);
-  const { dateRange, dataType } = useFilters();
+  const { dateRange, dataType, threat } = useFilters();
 
   // Příprava proměnných pro filtrování
   const offset = (page - 1) * limit;
@@ -27,7 +27,8 @@ export function useTableData(limit: number = 50, initialPage: number = 1) {
       offset, 
       type, 
       startDate, 
-      endDate 
+      endDate,
+      threat
     }
   });
 

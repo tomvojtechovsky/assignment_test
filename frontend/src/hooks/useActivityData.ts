@@ -17,14 +17,16 @@ export function useActivityData(
   period: TimeFilterType, 
   startDate: Date | null = null, 
   endDate: Date | null = null,
-  type: DataType = 'all'
+  type: DataType = 'all',
+  threat: boolean | null = null
 ) {
   const { data, loading, error } = useQuery<{ activityData: ActivityDataPoint[] }>(GET_ACTIVITY_DATA, {
     variables: {
       period,
       startDate: period === 'all' ? null : (period === 'custom' && startDate ? startDate.toISOString() : null),
       endDate: period === 'all' ? null : (period === 'custom' && endDate ? endDate.toISOString() : null),
-      type: type === 'all' ? null : type
+      type: type === 'all' ? null : type,
+      threat
     },
   });
 

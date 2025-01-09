@@ -16,14 +16,16 @@ import { useFilters } from '../../../../context/FiltersContext';
 import { useTypeColor } from '../../../../hooks/useTypeColor';
 
 export default function ActivityChart() {
-    const { dateRange, dataType } = useFilters();
+    const { dateRange, dataType, threat } = useFilters();
+
     const typeColors = useTypeColor(dataType);  // Získáme barvy podle aktuálního typu
 
     const { data, loading, error, isEmpty } = useActivityData(
         dateRange.type,
         dateRange.type === 'custom' ? dateRange.start : null,
         dateRange.type === 'custom' ? dateRange.end : null,
-        dataType
+        dataType,
+        threat
     );
 
     // Vypočítáme kumulativní data a trend
@@ -44,8 +46,8 @@ export default function ActivityChart() {
                 trend
             };
         });
-    }, [data]);
-
+    }, [data, threat]);
+    
     // Vypočítáme průměrnou aktivitu
     const averageStats = useMemo(() => {
         if (!enrichedData.length) return { value: 0, text: 'útoků za den' };
@@ -116,7 +118,7 @@ export default function ActivityChart() {
     };
 
     return (
-        <div className="w-full h-[400px] bg-white p-6 rounded-lg shadow-sm">
+        <div className="w-full h-[400px] bg-white rounded-lg shadow-sm">
             <div className="flex justify-between items-center mb-6">
                 <div className="space-y-1">
                     <h3 className="text-lg font-semibold text-gray-700">Aktivita systému</h3>
@@ -178,3 +180,4 @@ export default function ActivityChart() {
         </div>
     );
 }
+

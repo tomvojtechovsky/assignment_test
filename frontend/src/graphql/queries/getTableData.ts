@@ -7,7 +7,8 @@ export const GET_TABLE_DATA = gql`
     $offset: Int!, 
     $type: String, 
     $startDate: String, 
-    $endDate: String
+    $endDate: String,
+    $threat: Boolean 
   ) {
     messages {
       messages(
@@ -15,7 +16,8 @@ export const GET_TABLE_DATA = gql`
         offset: $offset, 
         type: $type, 
         startDate: $startDate, 
-        endDate: $endDate
+        endDate: $endDate,
+        threat: $threat
       ) {
         items {
           ... on SyslogMessage {

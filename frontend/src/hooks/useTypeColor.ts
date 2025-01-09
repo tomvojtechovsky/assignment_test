@@ -6,7 +6,8 @@ import { DataType, TYPE_COLORS } from '../constants/colors';
 interface TypeColorReturn {
   getButtonClasses: (isActive: boolean) => string;
   getChartColor: () => string;
-  getBgClass: () => string;  // Přidáno
+  getBgClass: () => string;
+  getTextColor: () => string;
 }
 
 export function useTypeColor(type: DataType): TypeColorReturn {
@@ -22,6 +23,9 @@ export function useTypeColor(type: DataType): TypeColorReturn {
     getChartColor: () => TYPE_COLORS[type].chart,
 
     // Vrátí třídu pro pozadí
-    getBgClass: () => `bg-type-${type}/10 hover:bg-type-${type}/20`
+    getBgClass: () => `bg-type-${type}/10 hover:bg-type-${type}/20`,
+
+    // Vrátí barvu pro text
+    getTextColor: () => `text-type-${type}`
   }), [type]);
 }

@@ -19,14 +19,9 @@ export interface FiltersContextType {
 	setCustomRange: (start: Date | null, end: Date | null) => void;
 	resetDateRange: () => void;
 	setDataType: (type: 'all' | 'syslog' | 'dataflow') => void; // Přidáme setter
+	threat: boolean | null;
+	setThreatFilter: (value: boolean | null) => void;
 }
-
-// Výchozí stav
-const defaultDateRange: DateRange = {
-	type: 'all',
-	start: null,
-	end: null
-};
 
 // Vytvoření kontextu
 const FiltersContext = createContext<FiltersContextType | null>(null);
@@ -40,6 +35,12 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 		start: new Date(now.getFullYear(), now.getMonth() - 1, now.getDate()),
 		end: now
 	});
+	const [threat, setThreat] = useState<boolean | null>(null);
+
+	const setThreatFilter = (value: boolean | null) => {
+	  setThreat(value);
+	};
+
 
 	const setPresetRange = (type: TimeFilterType) => {
 
@@ -104,6 +105,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 		<FiltersContext.Provider value={{
 			dateRange,
 			dataType,
+			threat,
+			setThreatFilter,
 			setPresetRange,
 			setCustomRange,
 			resetDateRange,

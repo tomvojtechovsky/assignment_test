@@ -1,20 +1,21 @@
-# backend/schema/query/messages/metrics_resolver.py
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timedelta
 from backend.db.data_messages import Record
+from backend.filters.base import BaseFilter
 from .metrics_types import MessagesMetricsResponse, AttackTypeCount
 
 async def get_messages_metrics(
-    type: str | None = None,
-    startDate: str | None = None,
-    endDate: str | None = None
+    type: Optional[str] = None,
+    startDate: Optional[str] = None,
+    endDate: Optional[str] = None,
+    threat: Optional[bool] = None
 ) -> MessagesMetricsResponse:
     # Základní query
     query = Record.find({}, with_children=True)
 
-    # Filtr podle typu
-    if type:
-        query = query.find({'type': type})
+    # Aplikace filtrů
+    query = BaseFilter.apply(query, 'type', type)
+    query = BaseFilter.apply(query, 'threat', threat)
 
     # Filtr podle datového rozsahu
     if startDate and endDate:
@@ -52,8 +53,7 @@ async def get_messages_metrics(
     attacks_by_type = []
     attack_counts = {}
     for record in records:
-        if record.threat:
-            attack_counts[record.attack_type] = attack_counts.get(record.attack_type, 0) + 1
+        attack_counts[record.attack_type] = attack_counts.get(record.attack_type, 0) + 1
 
     # Výpočet záznamů za posledních 24 hodin
     last_24h_count = len([r for r in records if r.timestamp >= datetime.now() - timedelta(days=1)])

@@ -1,24 +1,25 @@
-#backend\schema\query\messages\resolver.py
 import strawberry
 from typing import List, Union, Optional
 from datetime import datetime
 from backend.db.data_messages import Record
+from backend.filters.base import BaseFilter
 from .types import MessagesResponse, DataflowMessage, SyslogMessage
 
 async def get_messages(
     limit: int = 500, 
     offset: int = 0,
-    type: str | None = None,
-    startDate: str | None = None,
-    endDate: str | None = None
+    type: Optional[str] = None,
+    startDate: Optional[str] = None,
+    endDate: Optional[str] = None,
+    threat: Optional[bool] = None
 ) -> MessagesResponse:
     # Základní query s řazením od nejnovějších
     query = Record.find({}, with_children=True).sort('-timestamp')
-
-    # Filtr podle typu
-    if type:
-        query = query.find({'type': type})
-
+    
+    # Aplikace filtrů pomocí BaseFilter
+    query = BaseFilter.apply(query, 'type', type)
+    query = BaseFilter.apply(query, 'threat', threat)
+    
     # Filtr podle datového rozsahu
     if startDate and endDate:
         # Oba data jsou vyplněny - filtruj rozsah
@@ -42,13 +43,11 @@ async def get_messages(
                 '$lte': datetime.fromisoformat(endDate.replace('Z', ''))
             }
         })
-
+    
     total = await query.count()
-
     # Správné stránkování s maximálním limitem 500
     limit = min(limit, 500)
     records = await query.skip(offset).limit(limit).to_list()
-
     items = []
     for record in records:
         base_params = {
@@ -60,7 +59,6 @@ async def get_messages(
             'type': record.type,
             'attackType': record.attack_type
         }
-
         if record.type == "dataflow":
             items.append(DataflowMessage(
                 **base_params,
@@ -71,7 +69,7 @@ async def get_messages(
             ))
         else:
             items.append(SyslogMessage(**base_params))
-
+    
     return MessagesResponse(
         items=items,
         totalCount=min(total, 500),

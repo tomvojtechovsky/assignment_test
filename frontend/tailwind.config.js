@@ -7,9 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        'type-all': '#d162e5',      // fialková
-        'type-syslog': '#3690c0',   // modrá
-        'type-flow': '#a6761d',     // hnědá
+        // Hlavní barva
+        main: '#d162e5',
+        
+        // Typy
+        'type-syslog': '#3690c0',   
+        'type-flow': '#a6761d',     
       }
     },
   },

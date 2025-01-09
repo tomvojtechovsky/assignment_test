@@ -1,5 +1,8 @@
 // src/constants/colors.ts
 
+// Hlavní barva aplikace
+export const MAIN_COLOR = '#d162e5';
+
 // Typy dat v aplikaci
 export type DataType = 'all' | 'syslog' | 'dataflow';
 
@@ -16,17 +19,24 @@ interface ColorScheme {
   }
 }
 
+// Mapování barev pro jednotlivé typy
+const TYPE_COLOR_VALUES = {
+  all: MAIN_COLOR,      // Používáme hlavní barvu pro 'all'
+  syslog: '#3690c0',
+  dataflow: '#a6761d'
+} as const;
+
 // Předpřipravené barevné třídy pro jednotlivé typy
 export const TYPE_COLORS: Record<DataType, ColorScheme> = {
   all: {
     button: {
-      active: 'bg-type-all text-white hover:bg-type-all/80',
+      active: 'bg-main text-white hover:bg-main/80',
       inactive: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
     },
-    chart: '#d162e5',
+    chart: TYPE_COLOR_VALUES.all,
     background: {
-      light: 'bg-type-all/10',
-      hover: 'bg-type-all/20'
+      light: 'bg-main/10',
+      hover: 'bg-main/20'
     }
   },
   syslog: {
@@ -34,7 +44,7 @@ export const TYPE_COLORS: Record<DataType, ColorScheme> = {
       active: 'bg-type-syslog text-white hover:bg-type-syslog/80',
       inactive: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
     },
-    chart: '#3690c0',
+    chart: TYPE_COLOR_VALUES.syslog,
     background: {
       light: 'bg-type-syslog/10',
       hover: 'bg-type-syslog/20'
@@ -45,10 +55,16 @@ export const TYPE_COLORS: Record<DataType, ColorScheme> = {
       active: 'bg-type-flow text-white hover:bg-type-flow/80',
       inactive: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
     },
-    chart: '#a6761d',
+    chart: TYPE_COLOR_VALUES.dataflow,
     background: {
       light: 'bg-type-flow/10',
       hover: 'bg-type-flow/20'
     }
   }
 };
+
+// Helper pro získání hex barvy podle typu
+export const getTypeColor = (type: DataType): string => TYPE_COLOR_VALUES[type];
+
+// Helper pro získání hlavní barvu
+export const getMainColor = (): string => MAIN_COLOR;

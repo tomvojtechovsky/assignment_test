@@ -15,7 +15,7 @@ export default function DashboardLayout() {
 
         <div className="flex-1 flex flex-col overflow-hidden p-2 sm:p-4 md:p-6 lg:p-8">
           <FiltersProvider>
-            <div className="sticky z-40 bg-white shadow-sm mt-2 sm:mt-4">
+            <div className="sticky z-40">
               <GlobalFilters />
             </div>
 

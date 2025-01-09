@@ -25,13 +25,13 @@ def get_context() -> Context:
     return Context()
 
 
+# backend/utils.py
 async def init_models():
     """Initialize DB models needed for MongoDB."""
-
     client = AsyncIOMotorClient(
         f"mongodb://{db_settings.mongodb_user}:{db_settings.mongodb_pass}"
         f"@{db_settings.mongodb_host}:{db_settings.mongodb_port}"
+        f"/?authSource=admin"  # Explicitně specifikovat zdroj autentizace
     )
     database = client[db_settings.mongodb_database]
-
     await init_beanie(database=database, document_models=[DataflowData, Record, SyslogData, User])

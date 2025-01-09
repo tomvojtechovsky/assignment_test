@@ -1,4 +1,3 @@
-# backend/schema/query/messages/activity_resolver.py
 import strawberry
 from typing import List, Optional
 from datetime import datetime, timedelta
@@ -6,6 +5,7 @@ from datetime import datetime, timedelta
 import sys
 import logging
 from backend.db.data_messages import Record, DataflowData, SyslogData
+from backend.filters.base import BaseFilter
 from .metrics_types import ActivityDataPoint
 
 logger = logging.getLogger('strawberry.query')
@@ -19,11 +19,11 @@ class ActivityDataPoint:
     label: str
     count: int
 
-async def aggregate_all_data(type: Optional[str] = None) -> List[ActivityDataPoint]:
+async def aggregate_all_data(type: Optional[str] = None, threat: Optional[bool] = None) -> List[ActivityDataPoint]:
    try:
        query = Record.find({}, with_children=True)
-       if type and type != 'all':
-           query = query.find({'type': type})
+       query = BaseFilter.apply(query, 'type', type)
+       query = BaseFilter.apply(query, 'threat', threat)
 
        records = await query.to_list()
        logger.debug(f"Found {len(records)} records")
@@ -47,37 +47,37 @@ async def aggregate_all_data(type: Optional[str] = None) -> List[ActivityDataPoi
    except Exception as e:
        logger.error(f"Error aggregating all data: {e}", exc_info=True)
        return []
-   
 
 async def get_activity_data(
    period: str,
    startDate: Optional[str] = None,
    endDate: Optional[str] = None,
-   type: Optional[str] = None
+   type: Optional[str] = None,
+   threat: Optional[bool] = None
 ) -> List[ActivityDataPoint]:
    try:
-       logger.debug(f"Fetching activity data for period: {period}, type: {type}")
+       logger.debug(f"Fetching activity data for period: {period}, type: {type}, threat: {threat}")
        now = datetime.utcnow()
 
        if period == 'all':
-           data = await aggregate_all_data(type)
+           data = await aggregate_all_data(type, threat)
        elif period == 'custom':
            if not startDate and not endDate:
-               data = await aggregate_all_data(type)
+               data = await aggregate_all_data(type, threat)
            else:
                start_date = datetime.fromisoformat(startDate.replace('Z', '')) if startDate else None
                end_date = datetime.fromisoformat(endDate.replace('Z', '')) if endDate else now
                days_diff = (end_date - (start_date or now - timedelta(days=365))).days
-               data = await aggregate_by_weeks(start_date, end_date, type) if days_diff > 90 else await aggregate_by_days(start_date, end_date, type)
+               data = await aggregate_by_weeks(start_date, end_date, type, threat) if days_diff > 90 else await aggregate_by_days(start_date, end_date, type, threat)
        elif period == 'week':
            start_date = now - timedelta(days=7)
-           data = await aggregate_by_days(start_date, now, type)
+           data = await aggregate_by_days(start_date, now, type, threat)
        elif period == 'month':
            start_date = now - timedelta(days=30)
-           data = await aggregate_by_days(start_date, now, type)
+           data = await aggregate_by_days(start_date, now, type, threat)
        elif period == 'year':
            start_date = now - timedelta(days=365)
-           data = await aggregate_by_weeks(start_date, now, type)
+           data = await aggregate_by_weeks(start_date, now, type, threat)
        else:
            return []
 
@@ -88,18 +88,13 @@ async def get_activity_data(
        logger.error(f"Error processing activity: {e}", exc_info=True)
        return []
 
-
-
-async def aggregate_by_days(start_date: datetime, end_date: datetime, type: Optional[str] = None) -> List[ActivityDataPoint]:
+async def aggregate_by_days(start_date: datetime, end_date: datetime, type: Optional[str] = None, threat: Optional[bool] = None) -> List[ActivityDataPoint]:
     try:
-        # Základní query
         query = Record.find({}, with_children=True)
 
-        # Filtr podle typu
-        if type and type != 'all':
-            query = query.find({'type': type})
+        query = BaseFilter.apply(query, 'type', type)
+        query = BaseFilter.apply(query, 'threat', threat)
 
-        # Filtr podle datového rozsahu
         if start_date and end_date:
             query = query.find({
                 'timestamp': {
@@ -123,7 +118,6 @@ async def aggregate_by_days(start_date: datetime, end_date: datetime, type: Opti
         records = await query.to_list()
         logger.debug(f"Found {len(records)} records")
 
-        # Agregace po dnech
         daily_counts = {}
         for record in records:
             day = record.timestamp.date()
@@ -143,14 +137,12 @@ async def aggregate_by_days(start_date: datetime, end_date: datetime, type: Opti
         logger.error(f"Error in daily aggregation: {e}", exc_info=True)
         return []
 
-
-
-async def aggregate_by_weeks(start_date: datetime, end_date: datetime, type: Optional[str] = None) -> List[ActivityDataPoint]:
+async def aggregate_by_weeks(start_date: datetime, end_date: datetime, type: Optional[str] = None, threat: Optional[bool] = None) -> List[ActivityDataPoint]:
    try:
        query = Record.find({}, with_children=True)
 
-       if type and type != 'all':
-           query = query.find({'type': type})
+       query = BaseFilter.apply(query, 'type', type)
+       query = BaseFilter.apply(query, 'threat', threat)
 
        if start_date and end_date:
            query = query.find({
@@ -175,7 +167,6 @@ async def aggregate_by_weeks(start_date: datetime, end_date: datetime, type: Opt
        records = await query.to_list()
        logger.debug(f"Found {len(records)} records")
 
-       # Agregace po týdnech
        weekly_counts = {}
        for record in records:
            week_start = record.timestamp - timedelta(days=record.timestamp.weekday())

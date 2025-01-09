@@ -6,11 +6,13 @@ export const GET_METRICS = gql`
     $type: String, 
     $startDate: String, 
     $endDate: String
+    $threat: Boolean
   ) {
     metrics(
       type: $type, 
       startDate: $startDate, 
       endDate: $endDate
+      threat: $threat
     ) {
       totalCount
       syslogCount
