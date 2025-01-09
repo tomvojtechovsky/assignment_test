@@ -16,7 +16,7 @@ export default function Footer() {
               className="h-4 w-4 text-type-all mr-2"
             />
             <span className="text-xs text-gray-600">
-              CyberFlow © {currentYear}
+              MIDARAI © {currentYear}
             </span>
           </div>
 

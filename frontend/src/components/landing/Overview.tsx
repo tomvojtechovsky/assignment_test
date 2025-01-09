@@ -1,27 +1,27 @@
-// src/components/landing/Overview.tsx
+// Overview.tsx
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faUserSecret,
-  faChartLine, 
-  faMagnifyingGlassChart 
+  faShieldAlt,
+  faSearch, 
+  faChartBar 
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function Overview() {
   const features = [
     {
-      title: "Monitoring & Detekce",
-      description: "Sledování Syslog a Dataflow v reálném čase. Automatická detekce a klasifikace bezpečnostních hrozeb s okamžitým upozorněním.",
-      icon: faUserSecret
+      title: "Pokročilá detekce anomálií",
+      description: "MIDARAI využívá umělou inteligenci pro detekci vzorců chování v síťovém provozu a identifikaci potenciálních hrozeb v reálném čase.",
+      icon: faShieldAlt
     },
     {
-      title: "Analýza & Vizualizace",
-      description: "Interaktivní grafy a statistiky poskytují okamžitý přehled o stavu vaší sítě. Sledování trendů a identifikace potenciálních rizik.",
-      icon: faChartLine
+      title: "Komplexní analýza dat",
+      description: "Spojuje různé typy datových zdrojů, což umožňuje komplexní pohled na síťový provoz a přesnější detekci hrozeb.",
+      icon: faSearch
     },
     {
-      title: "Pokročilá Analýza",
-      description: "Využití pokročilých algoritmů pro detekci vzorců chování. Prediktivní analýza pro včasnou identifikaci bezpečnostních hrozeb.",
-      icon: faMagnifyingGlassChart
+      title: "Rychlá reakce na incidenty",
+      description: "Software je navržen tak, aby okamžitě reagoval na zjištěné hrozby a minimalizoval potenciální rizika pro infrastrukturu.",
+      icon: faChartBar
     }
   ];
 
@@ -29,7 +29,7 @@ export default function Overview() {
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-          Komplexní bezpečnostní monitoring
+          Klíčové funkce MIDARAI
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -60,9 +60,7 @@ export default function Overview() {
 
         <div className="mt-16 text-center">
           <p className="text-gray-600 max-w-2xl mx-auto">
-            CyberFlow poskytuje komplexní řešení pro monitoring a analýzu 
-            síťového provozu. Přihlaste se a získejte detailní přehled o 
-            bezpečnosti vaší infrastruktury.
+            MIDARAI poskytuje komplexní řešení pro detekci a analýzu síťových hrozeb, které kombinuje pokročilé algoritmy a různé datové zdroje pro maximální účinnost a rychlost reakce.
           </p>
         </div>
       </div>

@@ -47,9 +47,9 @@ export default function Sidebar() {
 
       {/* Navigační menu */}
       <nav className="mt-16 flex-1">
-        {navigationItems.map(item => (
+        {navigationItems.map( (item, index) => (
           <Link
-            key={item.path}
+            key={`${item.path}-${index}`}
             to={item.path}
             className={`
               flex items-center px-4 py-3 transition-colors duration-200 group relative

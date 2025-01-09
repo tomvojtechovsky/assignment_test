@@ -39,7 +39,7 @@ export default function Header() {
               icon={faShieldHalved}
               className="h-6 w-6 text-type-all"
             />
-            <span className="text-xl font-bold">CyberFlow</span>
+            <span className="text-xl font-bold">MIDARAI</span>
           </Link>
 
           {/* Mobilní menu toggle */}

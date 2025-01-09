@@ -1,3 +1,4 @@
+// HeroSection.tsx
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import cyberflowBg from '../../assets/images/cyberflow.webp';
@@ -19,13 +20,12 @@ export default function HeroSection() {
 
             {/* Content */}
             <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
-                    CyberFlow
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-2">
+                    MIDARAI
                 </h1>
 
-                <p className="text-base sm:text-xl md:text-2xl text-gray-200 mb-6 max-w-2xl mx-auto">
-                    Pokročilá detekce síťových hrozeb v reálném čase. 
-                    Analyzuje a monitoruje infrastrukturu pomocí inteligentních algoritmů.
+                <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 max-w-2xl mx-auto">
+                    Pokročilá detekce síťových hrozeb v reálném čase pomocí umělé inteligence.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
@@ -51,20 +51,20 @@ export default function HeroSection() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
                     {[
                         { 
-                            main: "2 typy", 
-                            sub: "Syslog & Dataflow" 
+                            main: "Více datových zdrojů", 
+                            sub: "Spojení různých typů dat" 
                         },
                         { 
-                            main: "7 kategorií", 
-                            sub: "Útoků" 
+                            main: "Pokročilé AI", 
+                            sub: "Pro detekci anomálií" 
                         },
                         { 
-                            main: "Real-time", 
-                            sub: "Monitoring" 
+                            main: "Real-time monitoring", 
+                            sub: "Rychlá reakce na hrozby" 
                         }
                     ].map((metric, index) => (
-                        <div key={index} className="text-center bg-white/10 p-3 rounded-lg">
-                            <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                        <div key={index} className="text-center bg-main/10 p-4 rounded-lg">
+                            <div className="text-xl font-bold text-white mb-1">
                                 {metric.main}
                             </div>
                             <div className="text-xs sm:text-sm text-gray-300">
