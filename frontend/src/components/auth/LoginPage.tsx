@@ -28,7 +28,7 @@ export default function LoginPage() {
             Přihlášení
           </h1>
           <p className="text-center text-gray-600 mb-6">
-            Pro vstup do aplikace se přihlaste pomocí svého účtu.
+            Pro vstup do MIDARAI se přihlaste
           </p>
           <LoginForm />
         </div>

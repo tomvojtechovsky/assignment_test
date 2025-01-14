@@ -1,21 +1,21 @@
 // components/filters/global/TypeFilter.tsx
 import { useFilters } from '../../../context/FiltersContext';
-import { useTypeColor } from '../../../hooks/useTypeColor';
-import { DataType } from '../../../constants/colors';
+import { useColorScheme } from '../../../hooks/useColorScheme';
+import { ColorType } from '../../../constants/colors';
 
 export default function TypeFilter() {
   const { dataType, setDataType } = useFilters();
-  
-  const allColors = useTypeColor('all');
-  const syslogColors = useTypeColor('syslog');
-  const dataflowColors = useTypeColor('dataflow');
 
-  const getColorForType = (type: DataType) => {
-    switch(type) {
-      case 'all': return allColors;
-      case 'syslog': return syslogColors;
-      case 'dataflow': return dataflowColors;
-    }
+  // Helper pro převod typu filtru na typ barvy
+  const getColorType = (filterType: string): ColorType => {
+    return filterType === 'all' ? 'main' : filterType as ColorType;
+  };
+
+  // Získání barevného schématu pro každý typ
+  const getColorScheme = (type: string) => {
+    const colorType = getColorType(type);
+    const colors = useColorScheme(colorType);
+    return colors.button[dataType === type ? 'active' : 'inactive'];
   };
 
   return (
@@ -28,7 +28,7 @@ export default function TypeFilter() {
             onClick={() => setDataType(type)}
             className={`
               px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium transition-all
-              ${getColorForType(type).getButtonClasses(dataType === type)}
+              ${getColorScheme(type)}
             `}
           >
             {type === 'all' ? 'Vše' : type === 'syslog' ? 'Syslog' : 'Dataflow'}

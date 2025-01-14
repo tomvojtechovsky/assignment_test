@@ -35,15 +35,17 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 		start: new Date(now.getFullYear(), now.getMonth() - 1, now.getDate()),
 		end: now
 	});
+
+	// Přidáme stav pro filtrování hrozeb
+	// true - pouze hrozby, null - všechny zprávy
 	const [threat, setThreat] = useState<boolean | null>(null);
 
 	const setThreatFilter = (value: boolean | null) => {
-	  setThreat(value);
+		console.log('setThreatFilter', value);
+		setThreat(value);
 	};
 
-
 	const setPresetRange = (type: TimeFilterType) => {
-
 
 		switch (type) {
 			case 'all':
@@ -110,7 +112,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 			setPresetRange,
 			setCustomRange,
 			resetDateRange,
-			setDataType // Přidáme setter
+			setDataType
 		}}>
 			{children}
 		</FiltersContext.Provider>

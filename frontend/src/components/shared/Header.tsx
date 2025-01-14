@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { TYPE_COLORS } from '../../constants/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faShieldHalved, 
@@ -37,7 +38,7 @@ export default function Header() {
           >
             <FontAwesomeIcon
               icon={faShieldHalved}
-              className="h-6 w-6 text-type-all"
+              className={`h-6 w-6 text-type-all ${TYPE_COLORS.main.text}`}
             />
             <span className="text-xl font-bold">MIDARAI</span>
           </Link>
@@ -90,9 +91,9 @@ export default function Header() {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium
+                className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium
                   bg-type-all text-white rounded-lg hover:bg-type-all/90 
-                  transition-colors whitespace-nowrap"
+                  transition-colors whitespace-nowrap ${TYPE_COLORS.main.button.active}`}
               >
                 <FontAwesomeIcon
                   icon={faLock}

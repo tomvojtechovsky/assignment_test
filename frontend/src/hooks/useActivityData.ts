@@ -9,9 +9,9 @@ interface ActivityDataPoint {
   count: number;
 }
 
-interface ActivityDataResponse {
-  activityData: ActivityDataPoint[];
-}
+// interface ActivityDataResponse {
+//   activityData: ActivityDataPoint[];
+// }
 
 export function useActivityData(
   period: TimeFilterType, 
@@ -20,6 +20,7 @@ export function useActivityData(
   type: DataType = 'all',
   threat: boolean | null = null
 ) {
+
   const { data, loading, error } = useQuery<{ activityData: ActivityDataPoint[] }>(GET_ACTIVITY_DATA, {
     variables: {
       period,

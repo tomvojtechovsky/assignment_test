@@ -6,19 +6,19 @@ import sys
 import logging
 from backend.db.data_messages import Record, DataflowData, SyslogData
 from backend.filters.base import BaseFilter
-from .metrics_types import ActivityDataPoint
+from .activity_types import ActivityDataPoint
 
 logger = logging.getLogger('strawberry.query')
 logger.setLevel(logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
-@strawberry.type
-class ActivityDataPoint:
-    """Datový bod aktivity systému"""
-    label: str
-    count: int
-
+# @strawberry.type
+# class ActivityDataPoint:
+#     """Datový bod aktivity systému"""
+#     label: str
+#     count: int
+ 
 async def aggregate_all_data(type: Optional[str] = None, threat: Optional[bool] = None) -> List[ActivityDataPoint]:
    try:
        query = Record.find({}, with_children=True)
@@ -26,7 +26,7 @@ async def aggregate_all_data(type: Optional[str] = None, threat: Optional[bool] 
        query = BaseFilter.apply(query, 'threat', threat)
 
        records = await query.to_list()
-       logger.debug(f"Found {len(records)} records")
+    #    logger.debug(f"Found {len(records)} records")
 
        daily_counts = {}
        for record in records:
@@ -41,7 +41,7 @@ async def aggregate_all_data(type: Optional[str] = None, threat: Optional[bool] 
            for day, count in sorted(daily_counts.items())
        ]
 
-       logger.debug(f"Aggregated {len(result)} daily points")
+    #    logger.debug(f"Aggregated {len(result)} daily points")
        return result
 
    except Exception as e:
@@ -56,7 +56,7 @@ async def get_activity_data(
    threat: Optional[bool] = None
 ) -> List[ActivityDataPoint]:
    try:
-       logger.debug(f"Fetching activity data for period: {period}, type: {type}, threat: {threat}")
+    #    logger.debug(f"Fetching activity data for period: {period}, type: {type}, threat: {threat}")
        now = datetime.utcnow()
 
        if period == 'all':
@@ -81,7 +81,7 @@ async def get_activity_data(
        else:
            return []
 
-       logger.debug(f"Returning {len(data)} data points")
+    #    logger.debug(f"Returning {len(data)} data points")
        return data
 
    except Exception as e:
@@ -116,7 +116,6 @@ async def aggregate_by_days(start_date: datetime, end_date: datetime, type: Opti
             })
 
         records = await query.to_list()
-        logger.debug(f"Found {len(records)} records")
 
         daily_counts = {}
         for record in records:
@@ -165,7 +164,6 @@ async def aggregate_by_weeks(start_date: datetime, end_date: datetime, type: Opt
            })
 
        records = await query.to_list()
-       logger.debug(f"Found {len(records)} records")
 
        weekly_counts = {}
        for record in records:

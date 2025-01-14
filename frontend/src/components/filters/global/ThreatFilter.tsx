@@ -5,7 +5,8 @@ export default function ThreatFilter() {
   const { threat, setThreatFilter } = useFilters();
 
   const handleClick = () => {
-    setThreatFilter(threat === true ? null : true);
+    let val = threat === true ? null : true;
+    setThreatFilter( val );
   };
 
   return (

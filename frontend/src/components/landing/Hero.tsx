@@ -2,6 +2,8 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import cyberflowBg from '../../assets/images/cyberflow.webp';
+import { TYPE_COLORS } from '../../constants/colors';
+
 
 export default function HeroSection() {
     const { isAuthenticated } = useAuth();
@@ -31,12 +33,14 @@ export default function HeroSection() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
                     {!isAuthenticated && (
                         <Link
-                            to="/login"
-                            className="w-full sm:w-auto px-6 py-2 bg-type-all text-white rounded-lg 
-                            hover:bg-type-all/90 transition-colors font-medium"
-                        >
-                            Přihlásit se
-                        </Link>
+                        to="/login"
+                        className={`
+                            w-full sm:w-auto px-6 py-2 text-white rounded-lg 
+                            transition-colors font-medium ${TYPE_COLORS.main.button.active}
+                        `}
+                    >
+                        Přihlásit se
+                    </Link>
                     )}
 
                     <Link
@@ -50,17 +54,17 @@ export default function HeroSection() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
                     {[
-                        { 
-                            main: "Více datových zdrojů", 
-                            sub: "Spojení různých typů dat" 
+                        {
+                            main: "Více datových zdrojů",
+                            sub: "Spojení různých typů dat"
                         },
-                        { 
-                            main: "Pokročilé AI", 
-                            sub: "Pro detekci anomálií" 
+                        {
+                            main: "Pokročilé AI",
+                            sub: "Pro detekci anomálií"
                         },
-                        { 
-                            main: "Real-time monitoring", 
-                            sub: "Rychlá reakce na hrozby" 
+                        {
+                            main: "Real-time monitoring",
+                            sub: "Rychlá reakce na hrozby"
                         }
                     ].map((metric, index) => (
                         <div key={index} className="text-center bg-main/10 p-4 rounded-lg">

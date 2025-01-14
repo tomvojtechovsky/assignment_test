@@ -1,9 +1,46 @@
 import strawberry
 from typing import List, Union, Optional
+import logging
+
+import requests
+import json
+
 from datetime import datetime
 from backend.db.data_messages import Record
 from backend.filters.base import BaseFilter
 from .types import MessagesResponse, DataflowMessage, SyslogMessage
+
+logger = logging.getLogger('strawberry.query')
+logger.setLevel(logging.DEBUG)
+
+logger = logging.getLogger(__name__)
+
+async def ipinfo(ip: str) -> None:
+    token = "73d853510c6dfd"
+    url = f"https://ipinfo.io/{ip}/json?token={token}"
+    url2 = f"http://ip-api.com/json/{ip}"
+    
+    try:
+        response = requests.get(url2)
+        response.raise_for_status()  # Zkontroluje, zda odpověď byla úspěšná (status code 200)
+        data = response.json()
+        
+        # Extrakce požadovaných údajů
+        info = {
+            "Coordinates (loc)": data.get("loc", "N/A"),
+            "City": data.get("city", "N/A"),
+            "Region": data.get("region", "N/A"),
+            "Country": data.get("country", "N/A"),
+            "Company Name": data.get("company", {}).get("name", "N/A"),
+            "Company Domain": data.get("company", {}).get("domain", "N/A"),
+            "url": url2
+        }
+
+        # Výpis pole s informacemi
+        print(json.dumps(info, indent=4))  # Zobrazí strukturovaný výstup
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Chyba při volání API: {e}")
 
 async def get_messages(
     limit: int = 500, 
@@ -67,11 +104,16 @@ async def get_messages(
                 targetIp=record.target_ip,
                 targetPort=record.target_port
             ))
+            #print (f"Source IP: {record.source_ip}")
+            await ipinfo(record.source_ip)
+
         else:
             items.append(SyslogMessage(**base_params))
     
+
     return MessagesResponse(
         items=items,
         totalCount=min(total, 500),
         hasMore=(total > offset + limit)
     )
+

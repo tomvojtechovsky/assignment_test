@@ -11,8 +11,6 @@ logger = logging.getLogger('mutations.auth')
 logger = logging.getLogger('strawberry.query')
 logger.setLevel(logging.DEBUG)
 
-logger.info(f"backend\schema\mutations\auth\resolver.py")
-
 
 async def login(info: Info, username: str, password: str) -> str:
     """
@@ -24,12 +22,6 @@ async def login(info: Info, username: str, password: str) -> str:
     Returns:
         str: JWT token při úspěšném přihlášení nebo chybová zpráva
     """
-    # Logování přijatých parametrů
-    logger.debug(f"Attempting to log in with username: {username} and password: {password}")
-
-    # Přidejte na začátek login funkce
-    logger.debug(f"Context info: {info.context}")
-    logger.debug(f"Context response: {getattr(info.context, 'response', None)}")
 
     # Vyhledání uživatele v databázi podle username
     user = await User.find_one(User.username == username)
@@ -49,9 +41,6 @@ async def login(info: Info, username: str, password: str) -> str:
     }
     # Zakódování tokenu pomocí tajného klíče
     token = jwt.encode(token_data, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
-
-    # Logování úspěšného přihlášení
-    logger.info(f"User {username} logged in successfully. Token created.")
 
     # Nastavení bezpečné cookie s tokenem
     response = info.context.response

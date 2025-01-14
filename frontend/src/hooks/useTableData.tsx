@@ -1,7 +1,7 @@
 // frontend\src\hooks\useTableData.tsx
 import { useQuery } from '@apollo/client';
 import { GET_TABLE_DATA } from '../graphql/queries/getTableData';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFilters } from '../context/FiltersContext';
 
 export function useTableData(limit: number = 50, initialPage: number = 1) {

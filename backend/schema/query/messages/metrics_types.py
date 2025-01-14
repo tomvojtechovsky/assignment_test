@@ -18,8 +18,8 @@ class MessagesMetricsResponse:
     attacksByType: List[AttackTypeCount] = strawberry.field(description="Počet útoků podle typu")
     last24hCount: int = strawberry.field(description="Počet zpráv za posledních 24 hodin")
 
-@strawberry.type
-class ActivityDataPoint:
-    """Datový bod aktivity systému"""
-    label: str
-    count: int
+# @strawberry.type
+# class ActivityDataPoint:
+#     """Datový bod aktivity systému"""
+#     label: str
+#     count: int

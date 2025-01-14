@@ -28,7 +28,7 @@ from backend.utils import init_models
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
-    format='%(name)s - %(levelname)s - %(message)s',
+    format='%(levelname)s: %(message)s (%(name)s)',
     handlers=[
         logging.StreamHandler(),
         logging.FileHandler('debug.log', encoding='utf-8')

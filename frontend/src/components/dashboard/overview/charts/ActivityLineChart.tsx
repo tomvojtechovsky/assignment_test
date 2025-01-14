@@ -13,12 +13,13 @@ import {
 } from 'recharts';
 import { useActivityData } from '../../../../hooks/useActivityData';
 import { useFilters } from '../../../../context/FiltersContext';
-import { useTypeColor } from '../../../../hooks/useTypeColor';
+import { useColorScheme } from '../../../../hooks/useColorScheme';
+
 
 export default function ActivityChart() {
     const { dateRange, dataType, threat } = useFilters();
 
-    const typeColors = useTypeColor(dataType);  // Získáme barvy podle aktuálního typu
+    const colors = useColorScheme(dataType === 'all' ? 'main' : dataType);
 
     const { data, loading, error, isEmpty } = useActivityData(
         dateRange.type,
@@ -106,7 +107,7 @@ export default function ActivityChart() {
             <div className="bg-white p-4 shadow-lg border rounded-lg">
                 <p className="font-semibold mb-2">{label}</p>
                 <div className="space-y-1">
-                    <p className={`text-[${typeColors.getChartColor()}]`}>
+                    <p className={colors.text}>
                         Počet útoků: {payload[0]?.value || 0}
                     </p>
                     <p className="text-gray-600">
@@ -118,7 +119,7 @@ export default function ActivityChart() {
     };
 
     return (
-        <div className="w-full h-[400px] bg-white rounded-lg shadow-sm">
+        <div className="w-full h-[400px] bg-white rounded-lg shadow-sm pb-12">
             <div className="flex justify-between items-center mb-6">
                 <div className="space-y-1">
                     <h3 className="text-lg font-semibold text-gray-700">Aktivita systému</h3>
@@ -162,7 +163,7 @@ export default function ActivityChart() {
                     <Bar
                         yAxisId="left"
                         dataKey="count"
-                        fill={typeColors.getChartColor()}  // Použití dynamické barvy
+                        fill={colors.hex}  // Použití dynamické barvy
                         name="Počet útoků"
                         radius={[4, 4, 0, 0]}
                     />

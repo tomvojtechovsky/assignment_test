@@ -1,0 +1,33 @@
+Abstrakt:
+
+V posledních letech dochází k rostoucímu 
+počtu útoků v oblasti kybernetické bezpečnosti, 
+které narušují a ohrožují plynulý chod počítačových 
+sítí malých i velkých společností. 
+
+Kvůli množství a rychlosti přenášených dat 
+v počítačových sítích na ně není možné 
+včas reagovat pouze lidskými silami. 
+
+Proto je potřeba anomálie detekovat pomocí 
+specializovaných nástrojům které umožňují 
+rychlé zpracování dat a detekci potenciálních 
+hrozeb a případnou reakci na ně. 
+
+Na trhu je velké množství produktů, 
+které umožňují detekci bezpečnostních incidentů 
+v různých sítích. 
+
+Jejich největší slabinou je, že pracují pouze 
+s jedním datovým zdrojem a nekombinují 
+různé přístupy zpracování všech možných typů dat, 
+které je možné v síti sledovat. 
+
+Proto byl vytvořen software MIDARAI 
+založený na moderních technologiích 
+s pokročilými modely umělé inteligence 
+pro detekci anomálií v různých typech dat 
+z různých datových zdrojů umožňující 
+rychlé automatické reakce zabraňující 
+potenciálnímu ohrožení chodu sítě 
+a zamezení šíření hrozeb a jejich dopadům.

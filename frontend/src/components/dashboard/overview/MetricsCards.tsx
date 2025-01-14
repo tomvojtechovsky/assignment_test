@@ -5,10 +5,10 @@
 * - Reaguje na globální filtry
 * - Zobrazuje loading stav při načítání
 */
-import TotalMessagesCard from '../../cards/TotalMessagesCard';
-import ThreatsCard from '../../cards/ThreatsCard';
-import CommonAttackCard from '../../cards/CommonAttackCard';
-import RecentActivityCard from '../../cards/RecentActivityCard';
+import TotalMessagesCard from './cards/TotalMessagesCard';
+import ThreatsCard from './cards/ThreatsCard';
+import CommonAttackCard from './cards/CommonAttackCard';
+import RecentActivityCard from './cards/RecentActivityCard';
 
 import { useMetrics } from '../../../hooks/useMetrics';
 

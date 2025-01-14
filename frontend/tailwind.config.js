@@ -1,3 +1,4 @@
+// frontend\tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -7,12 +8,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Hlavní barva
+        // Stávající barvy
         main: '#d162e5',
-        
-        // Typy
         'type-syslog': '#3690c0',   
         'type-flow': '#a6761d',     
+
+        // Nové barvy pro typy útoků
+        'attack-type-benign': '#4CAF50',     // zelená
+        'attack-type-malware': '#FF5722',    // oranžová
+        'attack-type-botnet': '#2196F3',     // modrá
+        'attack-type-scanning': '#9C27B0',   // fialová
+        'attack-type-hijacking': '#FF9800',  // tmavě oranžová
+        'attack-type-ddos': '#F44336',       // červená
+        'attack-type-worm': '#795548',       // hnědá
+        'attack-type-mitm': '#607D8B'        // šedá
       }
     },
   },
