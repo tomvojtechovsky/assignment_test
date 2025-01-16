@@ -81,14 +81,14 @@ export const TYPE_COLORS: Record<ColorType, ColorScheme> = {
 
 // Barvy pro známé typy útoků
 export const ATTACK_COLORS = {
-    benign: '#607D8B',    // šedá/neutrální
-    malware: '#FF5722',   // výrazná červená
-    botnet: '#2196F3',    // modrá
-    scanning: '#9C27B0',  // fialová
-    hijacking: '#FF9800', // oranžová
-    ddos: '#F44336',      // červená
-    worm: '#795548',      // hnědá
-    mitm: '#673AB7'       // tmavě fialová
+    benign: '#8a8a8a',    
+    malware: '#d95f02',  
+    botnet: '#7570b3',    
+    scanning: '#e7298a',  
+    hijacking: '#66a61e', 
+    ddos: '#e6ab02',      
+    worm: '#a6761d',      
+    mitm: '#984ea3'       
 } as const;
 
 // Typ pro známé typy útoků

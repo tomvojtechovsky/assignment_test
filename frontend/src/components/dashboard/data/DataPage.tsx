@@ -34,7 +34,7 @@ export default function DataPage() {
   }, [dataType, dateRange]);
 
   return (
-    <div className="space-y-6 mt-4">
+    <div className="space-y-6 mr-4">
       <Card>
         
         {loading && <div>Načítání...</div>}

@@ -4,11 +4,9 @@ import QuickInsights from "./QuickInsights";
 
 export default function OverviewPage() {
   return (
-    <div className="mt-4">
-      <div className="">
-        <MetricsCards />
-        <QuickInsights />
-      </div>
+    <div className="mr-4">
+      <MetricsCards />
+      <QuickInsights />
     </div>
   );
 }

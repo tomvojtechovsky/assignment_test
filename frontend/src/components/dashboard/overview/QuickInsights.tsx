@@ -11,8 +11,6 @@ export default function QuickInsights() {
     <div className="w-full">
       <Card className="p-4 mt-4">
         <ActivityLineChart />
-
-
       </Card>
       <Card className="p-4 mt-4">
         <div className='flex justify-between items-center mt-4'>

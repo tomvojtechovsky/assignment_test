@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { TYPE_COLORS } from '../../../constants/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faChartPie, 
@@ -23,7 +24,8 @@ export default function Sidebar() {
     <aside 
       className={`
         ${isExpanded ? 'w-64' : 'w-16'} 
-        bg-white border-r border-gray-200 shadow-sm 
+        ${TYPE_COLORS.main.background[10]}
+        border-r border-gray-200 shadow-sm 
         transition-all duration-300 ease-in-out relative overflow-hidden
         flex flex-col
       `}
@@ -54,7 +56,7 @@ export default function Sidebar() {
             className={`
               flex items-center px-4 py-3 transition-colors duration-200 group relative
               ${location.pathname === item.path 
-                ? 'text-type-all bg-type-all/10 border-r-4 border-type-all' 
+                ? 'text-type-all bg-type-all/10 border-r-4 border-main/30' 
                 : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}
             `}
           >

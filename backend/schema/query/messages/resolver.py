@@ -56,30 +56,7 @@ async def get_messages(
     # Aplikace filtrů pomocí BaseFilter
     query = BaseFilter.apply(query, 'type', type)
     query = BaseFilter.apply(query, 'threat', threat)
-    
-    # Filtr podle datového rozsahu
-    if startDate and endDate:
-        # Oba data jsou vyplněny - filtruj rozsah
-        query = query.find({
-            'timestamp': {
-                '$gte': datetime.fromisoformat(startDate.replace('Z', '')),
-                '$lte': datetime.fromisoformat(endDate.replace('Z', ''))
-            }
-        })
-    elif startDate:
-        # Jen počáteční datum - filtruj od tohoto data
-        query = query.find({
-            'timestamp': {
-                '$gte': datetime.fromisoformat(startDate.replace('Z', ''))
-            }
-        })
-    elif endDate:
-        # Jen koncové datum - filtruj do tohoto data
-        query = query.find({
-            'timestamp': {
-                '$lte': datetime.fromisoformat(endDate.replace('Z', ''))
-            }
-        })
+    query = BaseFilter.apply_date_range(query, startDate, endDate)
     
     total = await query.count()
     # Správné stránkování s maximálním limitem 500

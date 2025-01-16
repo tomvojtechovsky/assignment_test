@@ -28,7 +28,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 relative z-40 sticky top-0">
+    <header className={`border-b border-main/30 relative z-40 sticky top-0 ${TYPE_COLORS.main.background[20]}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
           {/* Logo sekce - vždy viditelná */}

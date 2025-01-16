@@ -1,3 +1,4 @@
+#backend\schema\query\messages\metrics_resolver.py
 from typing import List, Optional
 import logging
 from datetime import datetime, timedelta
@@ -10,14 +11,13 @@ logger.setLevel(logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
-async def get_messages_metrics(
-   type: Optional[str] = None,
-   startDate: Optional[str] = None,
-   endDate: Optional[str] = None,
-   threat: Optional[bool] = None
-) -> MessagesMetricsResponse:
-    
-    logger.debug(f"get_messages_metrics: type={type}, threat={threat}") 
+async def compute_metrics(  # přejmenováno pro lepší popis funkce
+    type: Optional[str] = None,
+    startDate: Optional[str] = None,
+    endDate: Optional[str] = None,
+    threat: Optional[bool] = None
+) -> MessagesMetricsResponse:  # tento return type je správný
+    logger.debug(f"compute_metrics: type={type}, threat={threat}") 
 
     # Základní query
     query = Record.find({}, with_children=True)
@@ -64,4 +64,4 @@ async def get_messages_metrics(
         threatsCount=threats_count,
         attacksByType=attacks_by_type,
         last24hCount=last_24h_count
-   )
+    )

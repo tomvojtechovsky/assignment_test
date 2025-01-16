@@ -29,6 +29,7 @@ export function CardStyled({ children, className = '' }: CardProps) {
         rounded-lg 
         shadow-md 
         p-6 
+        mb-4
         ${className}
       `}
       style={{ background: '#ece9f9', border: 'solid 1px #eda1fb' }}

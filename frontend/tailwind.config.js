@@ -1,4 +1,3 @@
-// frontend\tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -21,7 +20,15 @@ export default {
         'attack-type-hijacking': '#FF9800',  // tmavě oranžová
         'attack-type-ddos': '#F44336',       // červená
         'attack-type-worm': '#795548',       // hnědá
-        'attack-type-mitm': '#607D8B'        // šedá
+        'attack-type-mitm': '#607D8B',       // šedá
+
+        // Definice standardních červených barev
+        red: {
+          50: '#FEF2F2',   // velmi světle červená pro pozadí
+          100: '#FEE2E2',  // světle červená
+          200: '#FECACA',  // střední červená pro okraj
+          800: '#991B1B'   // tmavě červená pro text
+        }
       }
     },
   },
